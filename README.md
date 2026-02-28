@@ -423,3 +423,33 @@ using (true);
 -- - add Turnstile token verification via Edge Function
 -- - move inserts behind server endpoint
 -- =========================
+
+
+## Siguiente paso (deploy en Cloudflare Pages)
+Sí: **lo que sigue es conectarlo a Cloudflare Pages**.
+
+Configuración recomendada para este repo (SPA estática):
+- Framework preset: `None`
+- Build command: `npm run build`
+- Build output directory: `dist`
+- Node version: 20+ (si te lo pide)
+
+Este repo ya incluye:
+- Script `npm run build` que copia archivos a `dist/`
+- Archivo `public/_redirects` con `/* /index.html 200` para que funcionen rutas SPA (`/audit`, `/report/:id`, `/admin/...`).
+
+### Pasos rápidos
+1. En Cloudflare Pages, crear proyecto y conectar `Oskelias/RIWEB.APP`.
+2. En Build settings, usar:
+   - `npm ci && npm run build` (si falla `ci` por lockfile, usar `npm run build`)
+   - Output: `dist`
+3. Deploy.
+4. En `Custom domains`, asignar `riweb.app` y esperar estado `Active` (si está en `Verificando`, solo esperar propagación DNS).
+
+### Variables de entorno (cuando migremos a Supabase)
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+- `VITE_ADMIN_ALLOWLIST`
+
+> Nota: hoy el MVP guarda datos en `localStorage` (cliente). El siguiente hito técnico es reemplazar eso por Supabase para persistencia real multiusuario.
+
