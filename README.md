@@ -436,7 +436,7 @@ Configuración recomendada para este repo (SPA estática):
 
 Este repo ya incluye:
 - Script `npm run build` que copia archivos a `dist/`
-- Archivo `_redirects` con `/* /index.html 200` para que funcionen rutas SPA (`/audit`, `/report/:id`, `/admin/...`).
+- Archivo `public/_redirects` con `/* /index.html 200` para que funcionen rutas SPA (`/audit`, `/report/:id`, `/admin/...`).
 
 ### Pasos rápidos
 1. En Cloudflare Pages, crear proyecto y conectar `Oskelias/RIWEB.APP`.
