@@ -105,3 +105,56 @@ code { background:#eef2ff; padding:.15rem .35rem; border-radius:6px; }
   .cta-pill { width: 100%; font-size: 1.1rem; }
   .landing-subtitle { font-size: 1.2rem; }
 }
+
+
+.landing-section {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.landing-section h2 {
+  margin: 0 0 .75rem;
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  line-height: 1.2;
+}
+
+.section-intro {
+  margin: .35rem 0 .65rem;
+}
+
+.service-list,
+.step-list {
+  margin: 0;
+  padding-left: 1.2rem;
+  line-height: 1.6;
+}
+
+.check-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.landing-copy-block {
+  margin: .25rem 0 .5rem;
+  font-size: 1.02rem;
+}
+
+.strong-copy {
+  font-weight: 700;
+}
+
+.final-cta {
+  text-align: center;
+}
+
+.final-cta-actions {
+  display: flex;
+  gap: .8rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: .8rem;
+}
+
+.secondary-pill {
+  background: #111827;
+}
