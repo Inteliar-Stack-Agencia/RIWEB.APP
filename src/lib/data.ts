@@ -4,6 +4,23 @@ import { getSingle, hasSupabaseConfig, insertRow } from "./supabase";
 const getLocal = <T,>(k: string): T[] => JSON.parse(localStorage.getItem(k) || "[]") as T[];
 const setLocal = <T,>(k: string, v: T[]) => localStorage.setItem(k, JSON.stringify(v));
 
+function upsertById<T extends { id: string }>(items: T[], next: T) {
+  const index = items.findIndex((item) => item.id === next.id);
+  if (index === -1) {
+    items.push(next);
+    return items;
+  }
+  items[index] = next;
+  return items;
+}
+
+function cacheReportBundle(report: Report, audit: Audit) {
+  const reports = getLocal<Report>("reports");
+  const audits = getLocal<Audit>("audits");
+  setLocal("reports", upsertById(reports, report));
+  setLocal("audits", upsertById(audits, audit));
+}
+
 export async function createLeadAuditReport(payload: {
   email: string;
   url: string;
@@ -14,7 +31,7 @@ export async function createLeadAuditReport(payload: {
   opportunities: string[];
   risks: string[];
 }) {
-  if (!hasSupabaseConfig) {
+  const createLocalBundle = () => {
     const lead: Lead = {
       id: crypto.randomUUID(), email: payload.email, url: payload.url, locale: payload.locale,
       status: "new", notes: "", source: null, created_at: new Date().toISOString()
@@ -36,34 +53,58 @@ export async function createLeadAuditReport(payload: {
       report,
       audit
     };
+  };
+
+  if (!hasSupabaseConfig) {
+    return createLocalBundle();
   }
 
-  const lead = await insertRow("leads", { email: payload.email, url: payload.url, locale: payload.locale, status: "new" });
-  const audit = await insertRow("audits", {
-    lead_id: lead.id, url: payload.url, metrics: payload.metrics, score_total: payload.scoreTotal, tech: {}
-  }) as Audit;
-  const report = await insertRow("reports", {
-    lead_id: lead.id, audit_id: audit.id, locale: payload.locale,
-    summary: payload.summary, opportunities: payload.opportunities, risks: payload.risks
-  }) as Report;
+  try {
+    const lead = await insertRow("leads", { email: payload.email, url: payload.url, locale: payload.locale, status: "new" });
+    const audit = await insertRow("audits", {
+      lead_id: lead.id, url: payload.url, metrics: payload.metrics, score_total: payload.scoreTotal, tech: {}
+    }) as Audit;
+    const report = await insertRow("reports", {
+      lead_id: lead.id, audit_id: audit.id, locale: payload.locale,
+      summary: payload.summary, opportunities: payload.opportunities, risks: payload.risks
+    }) as Report;
 
-  return {
-    reportId: report.id,
-    report,
-    audit
-  };
+    cacheReportBundle(report, audit);
+
+    return {
+      reportId: report.id,
+      report,
+      audit
+    };
+  } catch {
+    return createLocalBundle();
+  }
 }
 
 export async function getReportBundle(reportId: string) {
-  if (!hasSupabaseConfig) {
+  const getFromLocal = () => {
     const reports = getLocal<Report>("reports");
     const audits = getLocal<Audit>("audits");
     const report = reports.find((r) => r.id === reportId) || null;
     const audit = report ? audits.find((a) => a.id === report.audit_id) || null : null;
     return { report, audit };
+  };
+
+  if (!hasSupabaseConfig) {
+    return getFromLocal();
   }
 
-  const report = await getSingle<Report>("reports", reportId);
-  const audit = report ? await getSingle<Audit>("audits", report.audit_id) : null;
-  return { report, audit };
+  try {
+    const report = await getSingle<Report>("reports", reportId);
+    const audit = report ? await getSingle<Audit>("audits", report.audit_id) : null;
+
+    if (!report || !audit) {
+      return getFromLocal();
+    }
+
+    cacheReportBundle(report, audit);
+    return { report, audit };
+  } catch {
+    return getFromLocal();
+  }
 }
