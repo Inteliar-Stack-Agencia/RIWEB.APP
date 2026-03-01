@@ -21,3 +21,4 @@ button:disabled { opacity:.6; cursor:wait; }
 .loading-step span { display:block; height:100%; background:#2563eb; width:0%; animation:load 1.8s linear infinite; }
 @keyframes load { from { width: 0%; } to { width: 100%; } }
 code { background:#eef2ff; padding:.15rem .35rem; border-radius:6px; }
+.error-text { color: #b91c1c; margin-top: .75rem; font-weight: 600; }

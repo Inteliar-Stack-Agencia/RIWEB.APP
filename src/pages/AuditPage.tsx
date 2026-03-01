@@ -11,13 +11,15 @@ export default function AuditPage({ locale }: { locale: Locale }) {
   const reportDraft = useMemo(() => reportFromMetrics(metrics, locale), [metrics, locale]);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
     try {
-      const reportId = await createLeadAuditReport({
+      const created = await createLeadAuditReport({
         email,
         url,
         locale,
@@ -26,7 +28,17 @@ export default function AuditPage({ locale }: { locale: Locale }) {
         ...reportDraft
       });
       const prefix = locale === "es" ? "/es" : "";
-      navigate(`${prefix}/report/${reportId}`);
+      navigate(`${prefix}/report/${created.reportId}`, {
+        state: {
+          report: created.report,
+          audit: created.audit
+        }
+      });
+    } catch (err) {
+      console.error("Failed to create report flow", err);
+      setError(locale === "es"
+        ? "No pudimos generar el reporte. Intentá nuevamente en unos segundos."
+        : "We couldn't generate the report. Please try again in a few seconds.");
     } finally {
       setLoading(false);
     }
@@ -47,6 +59,7 @@ export default function AuditPage({ locale }: { locale: Locale }) {
           <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" />
           <button disabled={loading}>{loading ? "..." : (locale === "es" ? "Ver reporte completo" : "See full report")}</button>
         </form>
+        {error ? <p className="error-text">{error}</p> : null}
       </div>
     </>
   );

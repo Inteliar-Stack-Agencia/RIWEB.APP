@@ -31,19 +31,27 @@ export async function createLeadAuditReport(payload: {
     const leads = getLocal<Lead>("leads"); const audits = getLocal<Audit>("audits"); const reports = getLocal<Report>("reports");
     leads.push(lead); audits.push(audit); reports.push(report);
     setLocal("leads", leads); setLocal("audits", audits); setLocal("reports", reports);
-    return report.id;
+    return {
+      reportId: report.id,
+      report,
+      audit
+    };
   }
 
   const lead = await insertRow("leads", { email: payload.email, url: payload.url, locale: payload.locale, status: "new" });
   const audit = await insertRow("audits", {
     lead_id: lead.id, url: payload.url, metrics: payload.metrics, score_total: payload.scoreTotal, tech: {}
-  });
+  }) as Audit;
   const report = await insertRow("reports", {
     lead_id: lead.id, audit_id: audit.id, locale: payload.locale,
     summary: payload.summary, opportunities: payload.opportunities, risks: payload.risks
-  });
+  }) as Report;
 
-  return report.id;
+  return {
+    reportId: report.id,
+    report,
+    audit
+  };
 }
 
 export async function getReportBundle(reportId: string) {

@@ -1,22 +1,57 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { getReportBundle } from "../lib/data";
 import type { Audit, Locale, Report } from "../types";
 
 export default function ReportPage({ locale }: { locale: Locale }) {
   const { id } = useParams();
+  const location = useLocation();
+  const routeState = location.state as { report?: Report; audit?: Audit } | null;
   const [report, setReport] = useState<Report | null>(null);
   const [audit, setAudit] = useState<Audit | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return;
-    getReportBundle(id).then(({ report: r, audit: a }) => {
-      setReport(r);
-      setAudit(a);
-    });
-  }, [id]);
+    if (!id) {
+      setLoading(false);
+      setError(locale === "es" ? "Reporte inválido." : "Invalid report ID.");
+      return;
+    }
 
-  if (!report || !audit) return <div className="card"><h2>Report not found</h2></div>;
+    if (routeState?.report && routeState?.audit) {
+      setReport(routeState.report);
+      setAudit(routeState.audit);
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    getReportBundle(id)
+      .then(({ report: r, audit: a }) => {
+        if (!r || !a) {
+          setError(locale === "es" ? "No encontramos ese reporte." : "We couldn't find that report.");
+          return;
+        }
+        setReport(r);
+        setAudit(a);
+      })
+      .catch((err) => {
+        console.error("Failed to load report", err);
+        setError(locale === "es"
+          ? "No pudimos cargar tu reporte. Intentá nuevamente."
+          : "We couldn't load your report. Please try again.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id, locale, routeState]);
+
+  if (loading) return <div className="card"><h2>{locale === "es" ? "Cargando reporte..." : "Loading report..."}</h2></div>;
+  if (error) return <div className="card"><h2>{error}</h2></div>;
+  if (!report || !audit) return <div className="card"><h2>{locale === "es" ? "Reporte no encontrado" : "Report not found"}</h2></div>;
   const m = audit.metrics;
 
   return (

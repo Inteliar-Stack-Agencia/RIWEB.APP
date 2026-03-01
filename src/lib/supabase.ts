@@ -12,13 +12,19 @@ const authHeaders = () => ({
 
 export async function insertRow<T extends object>(table: string, payload: T) {
   if (!hasSupabaseConfig) throw new Error("Missing Supabase env");
-  const res = await fetch(`${supabaseUrl}/rest/v1/${table}`, {
+  const res = await fetch(`${supabaseUrl}/rest/v1/${table}?select=*`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload)
   });
-  if (!res.ok) throw new Error(`Supabase insert failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Supabase insert failed (${table}) ${res.status}: ${body}`);
+  }
   const data = await res.json();
+  if (!Array.isArray(data) || !data[0]) {
+    throw new Error(`Supabase insert failed (${table}): empty response`);
+  }
   return data?.[0] as { id: string };
 }
 
@@ -30,7 +36,10 @@ export async function getSingle<T>(table: string, id: string) {
       Authorization: `Bearer ${supabaseAnonKey || ""}`
     }
   });
-  if (!res.ok) throw new Error(`Supabase read failed: ${res.status}`);
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Supabase read failed (${table}) ${res.status}: ${body}`);
+  }
   const data = await res.json();
   return (data?.[0] || null) as T | null;
 }
