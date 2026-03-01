@@ -33,3 +33,33 @@ export interface Report {
   risks: string[];
   created_at: string;
 }
+
+export interface AuditIssue {
+  title: string;
+  why: string;
+  fix: string;
+  impact: "low" | "medium" | "high";
+}
+
+export interface AuditQuickWin {
+  title: string;
+  how: string;
+  impact: "low" | "medium" | "high";
+}
+
+export interface AuditFunctionResult {
+  ok: true;
+  url: string;
+  tech: Record<string, boolean>;
+  signals: Record<string, unknown>;
+  metrics: {
+    seoBasics: number;
+    mobile: number;
+    conversion: number;
+    aiReadiness: number;
+    performance: number;
+  };
+  scoreTotal: number;
+  issues: AuditIssue[];
+  quickWins: AuditQuickWin[];
+}

@@ -27,6 +27,7 @@ export async function createLeadAuditReport(payload: {
   locale: Locale;
   metrics: Record<string, number>;
   scoreTotal: number;
+  tech: Record<string, unknown>;
   summary: string;
   opportunities: string[];
   risks: string[];
@@ -38,7 +39,7 @@ export async function createLeadAuditReport(payload: {
     };
     const audit: Audit = {
       id: crypto.randomUUID(), lead_id: lead.id, url: payload.url, fetched_at: new Date().toISOString(),
-      metrics: payload.metrics, tech: {}, score_total: payload.scoreTotal
+      metrics: payload.metrics, tech: payload.tech, score_total: payload.scoreTotal
     };
     const report: Report = {
       id: crypto.randomUUID(), lead_id: lead.id, audit_id: audit.id, locale: payload.locale,
@@ -62,7 +63,11 @@ export async function createLeadAuditReport(payload: {
   try {
     const lead = await insertRow("leads", { email: payload.email, url: payload.url, locale: payload.locale, status: "new" });
     const audit = await insertRow("audits", {
-      lead_id: lead.id, url: payload.url, metrics: payload.metrics, score_total: payload.scoreTotal, tech: {}
+      lead_id: lead.id,
+      url: payload.url,
+      metrics: payload.metrics,
+      score_total: payload.scoreTotal,
+      tech: payload.tech
     }) as Audit;
     const report = await insertRow("reports", {
       lead_id: lead.id, audit_id: audit.id, locale: payload.locale,
