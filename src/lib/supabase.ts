@@ -30,6 +30,36 @@ export async function insertRow<T extends object>(table: string, payload: T) {
   return data?.[0] as { id: string };
 }
 
+export async function listRows<T>(table: string, query = "select=*") {
+  if (!hasSupabaseConfig) throw new Error("Missing Supabase env");
+  const res = await fetch(`${supabaseUrl}/rest/v1/${table}?${query}`, {
+    headers: {
+      apikey: supabaseAnonKey || "",
+      Authorization: `Bearer ${supabaseAnonKey || ""}`
+    }
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Supabase list failed (${table}) ${res.status}: ${body}`);
+  }
+  return await res.json() as T[];
+}
+
+export async function updateRow<TPayload extends object, TRow>(table: string, id: string, payload: TPayload) {
+  if (!hasSupabaseConfig) throw new Error("Missing Supabase env");
+  const res = await fetch(`${supabaseUrl}/rest/v1/${table}?id=eq.${id}&select=*`, {
+    method: "PATCH",
+    headers: authHeaders(),
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Supabase update failed (${table}) ${res.status}: ${body}`);
+  }
+  const data = await res.json();
+  return (data?.[0] || null) as TRow | null;
+}
+
 export async function getSingle<T>(table: string, id: string) {
   if (!hasSupabaseConfig) throw new Error("Missing Supabase env");
   const res = await fetch(`${supabaseUrl}/rest/v1/${table}?id=eq.${id}&select=*`, {

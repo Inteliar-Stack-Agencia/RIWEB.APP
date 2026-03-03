@@ -1,5 +1,5 @@
-import type { Audit, Lead, Locale, Report } from "../types";
-import { getSingle, hasSupabaseConfig, insertRow } from "./supabase";
+import type { Audit, Lead, LeadStatus, Locale, Report } from "../types";
+import { getSingle, hasSupabaseConfig, insertRow, listRows, updateRow } from "./supabase";
 
 const getLocal = <T,>(k: string): T[] => JSON.parse(localStorage.getItem(k) || "[]") as T[];
 const setLocal = <T,>(k: string, v: T[]) => localStorage.setItem(k, JSON.stringify(v));
@@ -19,6 +19,35 @@ function cacheReportBundle(report: Report, audit: Audit) {
   const audits = getLocal<Audit>("audits");
   setLocal("reports", upsertById(reports, report));
   setLocal("audits", upsertById(audits, audit));
+}
+
+export async function getAdminLeads() {
+  if (!hasSupabaseConfig) {
+    const leads = getLocal<Lead>("leads");
+    return leads.sort((a, b) => b.created_at.localeCompare(a.created_at));
+  }
+
+  try {
+    return await listRows<Lead>("leads", "select=*&order=created_at.desc");
+  } catch {
+    const leads = getLocal<Lead>("leads");
+    return leads.sort((a, b) => b.created_at.localeCompare(a.created_at));
+  }
+}
+
+export async function updateLead(id: string, payload: { status: LeadStatus; notes: string | null }) {
+  if (!hasSupabaseConfig) {
+    const leads = getLocal<Lead>("leads");
+    const index = leads.findIndex((lead) => lead.id === id);
+    if (index === -1) throw new Error("Lead not found");
+    leads[index] = { ...leads[index], status: payload.status, notes: payload.notes };
+    setLocal("leads", leads);
+    return leads[index];
+  }
+
+  const updated = await updateRow<typeof payload, Lead>("leads", id, payload);
+  if (!updated) throw new Error("Lead update failed");
+  return updated as Lead;
 }
 
 export async function createLeadAuditReport(payload: {

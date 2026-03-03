@@ -158,3 +158,22 @@ code { background:#eef2ff; padding:.15rem .35rem; border-radius:6px; }
 .secondary-pill {
   background: #111827;
 }
+
+
+.admin-shell { display: grid; gap: 1rem; }
+.admin-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.admin-list { display: grid; gap: .6rem; margin-top: .75rem; }
+.admin-list-item {
+  width: 100%;
+  text-align: left;
+  background: #f8fafc;
+  color: #111827;
+  border: 1px solid #dbeafe;
+  display: grid;
+  gap: .25rem;
+}
+.admin-list-item.active { border-color: #8b5cf6; box-shadow: 0 0 0 2px rgba(139,92,246,.16); }
+
+@media (max-width: 900px) {
+  .admin-layout { grid-template-columns: 1fr; }
+}
