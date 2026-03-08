@@ -169,8 +169,8 @@ export default function AuditPage({ locale }: { locale: Locale }) {
       setTerminalLogs([]);
 
       const steps = locale === "es"
-        ? ["Iniciando escaneo de ADN de negocio...", "Detectando obsolescencia en código...", "Analizando fugas de conversión...", "Midiendo potencial de integración IA...", "Evaluando arquitectura de seguridad...", "Check de velocidad 2026...", "Finalizando mapa estratégico..."]
-        : ["Initializing business DNA scan...", "Detecting code obsolescence...", "Analyzing conversion leaks...", "Measuring IA integration potential...", "Evaluating security architecture...", "2026 Speed Check...", "Finalizing strategic roadmap..."];
+        ? ["Revisando si tus clientes te encuentran en el mapa...", "Verificando si tenés el botón de WhatsApp a mano...", "Chequeando si tus horarios y productos son legibles...", "Analizando la velocidad con la que atendés en la web...", "Buscando el lugar perfecto para tu nuevo Asistente IA...", "Preparando tu mapa de ruta para vender más..."]
+        : ["Checking if your customers find you on the map...", "Verifying if you have the WhatsApp button at hand...", "Checking if your hours and products are readable...", "Analyzing the speed at which you attend on the web...", "Finding the perfect spot for your new AI Assistant...", "Preparing your roadmap to sell more..."];
 
       try {
         for (let i = 0; i < steps.length; i++) {

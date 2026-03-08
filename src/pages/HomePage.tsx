@@ -132,13 +132,13 @@ export default function HomePage({ locale }: { locale: Locale }) {
       <div className="landing-brand">RIWEB PRO 2026</div>
       <h1 className="landing-title">
         {locale === "es"
-          ? "Dale una nueva vida a tu web antigua con IA"
-          : "Breathe new life into your legacy web with AI"}
+          ? "Hacé que tu negocio aparezca donde la gente busca hoy"
+          : "Make your business appear where people search today"}
       </h1>
       <p className="landing-subtitle">
         {locale === "es"
-          ? "Escaneamos tu código legado para reconvertirlo en una máquina de ventas moderna, rápida y automatizada."
-          : "We scan your legacy code to transform it into a modern, lightning-fast, and automated sales powerhouse."}
+          ? "Analizamos tu visibilidad en el mapa, activamos tu contacto por WhatsApp y sumamos asistentes que atienden solos por vos."
+          : "We analyze your map visibility, activate your WhatsApp contact, and add assistants that attend to customers for you."}
       </p>
 
       {/* Code Simulation Block */}
