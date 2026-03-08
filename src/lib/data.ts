@@ -60,6 +60,7 @@ export async function createLeadAuditReport(payload: {
   summary: string;
   opportunities: string[];
   risks: string[];
+  roadmap: string[];
 }) {
   const createLocalBundle = () => {
     const lead: Lead = {
@@ -73,6 +74,7 @@ export async function createLeadAuditReport(payload: {
     const report: Report = {
       id: crypto.randomUUID(), lead_id: lead.id, audit_id: audit.id, locale: payload.locale,
       summary: payload.summary, opportunities: payload.opportunities, risks: payload.risks,
+      roadmap: payload.roadmap,
       created_at: new Date().toISOString()
     };
     const leads = getLocal<Lead>("leads"); const audits = getLocal<Audit>("audits"); const reports = getLocal<Report>("reports");
@@ -100,7 +102,8 @@ export async function createLeadAuditReport(payload: {
     }) as Audit;
     const report = await insertRow("reports", {
       lead_id: lead.id, audit_id: audit.id, locale: payload.locale,
-      summary: payload.summary, opportunities: payload.opportunities, risks: payload.risks
+      summary: payload.summary, opportunities: payload.opportunities, risks: payload.risks,
+      roadmap: payload.roadmap
     }) as Report;
 
     cacheReportBundle(report, audit);

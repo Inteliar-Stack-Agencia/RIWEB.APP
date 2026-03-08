@@ -49,6 +49,7 @@ create table if not exists public.reports (
   summary text not null default '',
   opportunities jsonb not null default '[]'::jsonb,
   risks jsonb not null default '[]'::jsonb,
+  roadmap jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now()
 );
 

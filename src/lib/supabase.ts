@@ -14,9 +14,12 @@ const authHeaders = () => ({
 
 export async function insertRow<T extends object>(table: string, payload: T) {
   if (!hasSupabaseConfig) throw new Error("Missing Supabase env");
-  const res = await fetch(`${supabaseUrl}/rest/v1/${table}?select=*`, {
+  const res = await fetch(`${supabaseUrl}/rest/v1/${table}`, {
     method: "POST",
-    headers: authHeaders(),
+    headers: {
+      ...authHeaders(),
+      Prefer: "return=representation"
+    },
     body: JSON.stringify(payload)
   });
   if (!res.ok) {
@@ -24,10 +27,10 @@ export async function insertRow<T extends object>(table: string, payload: T) {
     throw new Error(`Supabase insert failed (${table}) ${res.status}: ${body}`);
   }
   const data = await res.json();
-  if (!Array.isArray(data) || !data[0]) {
-    throw new Error(`Supabase insert failed (${table}): empty response`);
+  if (!Array.isArray(data) || data.length === 0) {
+    throw new Error(`Supabase insert failed (${table}): unexpected response format`);
   }
-  return data?.[0] as { id: string };
+  return data[0] as { id: string } & Partial<T>;
 }
 
 export async function listRows<T>(table: string, query = "select=*") {
@@ -111,4 +114,26 @@ export async function runAudit(url: string) {
   }
 
   return parsed as AuditFunctionResult;
+}
+
+export async function callGenerateReport(audit: AuditFunctionResult, locale = "es") {
+  if (!hasSupabaseConfig) throw new Error("Missing Supabase env");
+  const res = await fetch(`${supabaseUrl}/functions/v1/generate-report`, {
+    method: "POST",
+    headers: {
+      apikey: supabaseAnonKey || "",
+      Authorization: `Bearer ${supabaseAnonKey || ""}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ audit, locale })
+  });
+  if (!res.ok) throw new Error(`Report generation failed: ${await res.text()}`);
+  const data = await res.json();
+  return data.report as {
+    summary: string;
+    opportunities: string[];
+    risks: string[];
+    roadmap: string[];
+    cta: string;
+  };
 }

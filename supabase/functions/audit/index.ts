@@ -57,6 +57,24 @@ function score(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
+async function getPageSpeedMetrics(url: string, key?: string) {
+  if (!key) return null;
+  try {
+    const apiReq = await fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&key=${key}&category=PERFORMANCE&category=ACCESSIBILITY&category=SEO&category=BEST_PRACTICES&strategy=mobile`);
+    const data = await apiReq.json();
+    const l = data.lighthouseResult.categories;
+    return {
+      performance: Math.round(l.performance.score * 100),
+      accessibility: Math.round(l.accessibility.score * 100),
+      seo: Math.round(l.seo.score * 100),
+      bestPractices: Math.round(l['best-practices'].score * 100),
+    };
+  } catch (err) {
+    console.error("PageSpeed API failed", err);
+    return null;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", {
@@ -78,6 +96,9 @@ Deno.serve(async (req) => {
     if (!url || !isPublicHttpUrl(url)) {
       return json(400, { ok: false, error: "Invalid URL. Only public http/https URLs are allowed." });
     }
+
+    const GOOGLE_PAGESPEED_API_KEY = Deno.env.get("GOOGLE_PAGESPEED_API_KEY");
+    const psMetrics = await getPageSpeedMetrics(url, GOOGLE_PAGESPEED_API_KEY);
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 10_000);
@@ -103,41 +124,56 @@ Deno.serve(async (req) => {
     }
 
     const html = await response.text();
+    const head = response.headers;
     const normalized = html.toLowerCase();
+    const isSpanish = normalized.includes("lang=\"es\"") || normalized.includes("lang='es'");
 
     const title = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1]?.trim() || "";
     const metaDescription = html.match(/<meta[^>]+name=["']description["'][^>]*content=["']([^"']*)["'][^>]*>/i)?.[1]?.trim() || "";
     const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)?.[1]?.replace(/<[^>]+>/g, " ").trim() || "";
     const hasViewport = hasMatch(normalized, /<meta[^>]+name=["']viewport["']/i);
     const canonical = html.match(/<link[^>]+rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1]?.trim() || "";
-    const robots = html.match(/<meta[^>]+name=["']robots["'][^>]*content=["']([^"']*)["']/i)?.[1]?.trim() || "";
+    const robots = html.match(/<meta[^>]+name=["']robots["'][^>]*content=["']([^"']*)["'][^>]*>/i)?.[1]?.trim() || "";
     const usesHttps = url.startsWith("https://");
+
+    // Security Headers Analysis
+    const secHeaders = {
+      hsts: !!head.get("strict-transport-security"),
+      csp: !!head.get("content-security-policy"),
+      xfo: !!head.get("x-frame-options"),
+      xcto: !!head.get("x-content-type-options"),
+    };
 
     const analytics = {
       gtag: hasMatch(normalized, /gtag\(/),
       ga: hasMatch(normalized, /google-analytics|analytics\.js|gtm\.js|googletagmanager/),
-      fbq: hasMatch(normalized, /fbq\(/)
+      fbq: hasMatch(normalized, /fbq\(/),
+      hotjar: hasMatch(normalized, /hotjar/),
+      clarity: hasMatch(normalized, /clarity\.ms/)
     };
 
     const tech = {
       wordpress: hasMatch(normalized, /wp-content|wordpress/),
+      elementor: hasMatch(normalized, /elementor/),
       shopify: hasMatch(normalized, /cdn\.shopify|shopify/),
       wix: hasMatch(normalized, /wix\.com|_wix/),
       webflow: hasMatch(normalized, /webflow/),
       squarespace: hasMatch(normalized, /squarespace/),
       react: hasMatch(normalized, /data-reactroot|react/),
-      next: hasMatch(normalized, /__next|_next\//)
+      next: hasMatch(normalized, /__next|_next\//),
+      framer: hasMatch(normalized, /framer\.com|framer-site/),
+      hubspot: hasMatch(normalized, /hs-script-loader|hubspot/)
     };
 
     const scriptCount = (html.match(/<script\b/gi) || []).length;
     const htmlSizeKb = Math.round((new TextEncoder().encode(html).length / 1024) * 10) / 10;
     const hasContact = hasMatch(normalized, /contact|contacto|get in touch|book a call/);
     const hasForm = hasMatch(normalized, /<form\b/);
-    const hasCta = hasMatch(normalized, /request|solicitar|demo|quote|proposal|agendar|book now|start now|contact us/);
+    const hasCta = hasMatch(normalized, /request|solicitar|demo|quote|proposal|agendar|book now|start now|contact us|contactar/);
     const hasWhatsapp = hasMatch(normalized, /wa\.me|whatsapp/);
     const hasChat = hasMatch(normalized, /intercom|drift|zendesk|tawk\.to|chatwoot|livechat|crisp/);
     const hasFaq = hasMatch(normalized, /faq|preguntas frecuentes/);
-    const hasAutomationHints = hasMatch(normalized, /automation|automati[sz]aci[oó]n|bot|ai|ia/);
+    const hasAutomationHints = hasMatch(normalized, /automation|automati[sz]aci[oó]n|bot|ai|ia|agente/);
 
     const seoSignals = {
       title: Boolean(title),
@@ -159,7 +195,22 @@ Deno.serve(async (req) => {
       hasAutomationHints
     };
 
-    const seoBasics = score(
+    // 1. PERFORMANCE
+    let performance = psMetrics?.performance ?? 85;
+    if (!psMetrics) {
+      if (htmlSizeKb > 500) performance -= 30;
+      else if (htmlSizeKb > 250) performance -= 20;
+      if (scriptCount > 40) performance -= 20;
+    }
+    performance = score(performance);
+
+    // 2. SPEED (LCP ESTIMATE)
+    let speed = psMetrics?.performance ? Math.min(psMetrics.performance + 5, 100) : score(performance - 10);
+    if (!usesHttps) speed -= 10;
+    speed = score(speed);
+
+    // 3. SEO
+    const seoBasics = psMetrics?.seo ?? score(
       (seoSignals.title ? 20 : 0) +
       (seoSignals.metaDescription ? 20 : 0) +
       (seoSignals.h1 ? 20 : 0) +
@@ -167,8 +218,10 @@ Deno.serve(async (req) => {
       (seoSignals.robots ? 20 : 0)
     );
 
-    const mobile = score(hasViewport ? 90 : 35);
+    // 4. MOBILE
+    const mobile = score(hasViewport ? 92 : 35);
 
+    // 5. CONVERSION
     const conversion = score(
       (hasCta ? 35 : 0) +
       (hasContact ? 25 : 0) +
@@ -176,101 +229,99 @@ Deno.serve(async (req) => {
       (hasWhatsapp ? 15 : 0)
     );
 
+    // 6. AI READINESS
     const aiReadiness = score(
       (hasChat ? 35 : 0) +
       (hasWhatsapp ? 25 : 0) +
-      (hasFaq ? 20 : 0) +
-      (hasAutomationHints ? 20 : 0)
+      (hasAutomationHints ? 40 : 0)
     );
 
-    let performance = 85;
-    if (htmlSizeKb > 500) performance -= 30;
-    else if (htmlSizeKb > 250) performance -= 20;
-    else if (htmlSizeKb > 120) performance -= 10;
+    // 7. SECURITY
+    const security = score(
+      (usesHttps ? 40 : 0) +
+      (secHeaders.hsts ? 20 : 0) +
+      (secHeaders.csp ? 20 : 0) +
+      (secHeaders.xfo ? 10 : 0) +
+      (secHeaders.xcto ? 10 : 0)
+    );
 
-    if (scriptCount > 40) performance -= 30;
-    else if (scriptCount > 25) performance -= 20;
-    else if (scriptCount > 12) performance -= 10;
+    // 8. ACCESSIBILITY
+    const accessibility = psMetrics?.accessibility ?? score(
+      (hasViewport ? 50 : 20) + (hasFaq ? 20 : 0) + 20 // baseline
+    );
 
-    if (!usesHttps) performance -= 15;
-
-    performance = score(performance);
+    const metrics = {
+      performance,
+      speed,
+      seoBasics,
+      mobile,
+      conversion,
+      aiReadiness,
+      security,
+      accessibility
+    };
 
     const scoreTotal = score(
-      performance * 0.28 + seoBasics * 0.24 + mobile * 0.16 + conversion * 0.2 + aiReadiness * 0.12
+      performance * 0.15 +
+      speed * 0.15 +
+      seoBasics * 0.15 +
+      mobile * 0.15 +
+      conversion * 0.15 +
+      aiReadiness * 0.1 +
+      security * 0.1 +
+      accessibility * 0.05
     );
 
     const issues: AuditIssue[] = [];
     const quickWins: AuditQuickWin[] = [];
 
+    if (!usesHttps) {
+      issues.push({
+        title: isSpanish ? "Conexión no segura (HTTP)" : "Insecure Connection (HTTP)",
+        why: isSpanish ? "HTTP no cifra los datos, afectando confianza y SEO." : "HTTP doesn't encrypt data, hurting trust and SEO rankings.",
+        fix: isSpanish ? "Instalar un certificado SSL y forzar HTTPS." : "Install an SSL certificate and enforce HTTPS.",
+        impact: "high"
+      });
+    }
+    if (!secHeaders.csp || !secHeaders.hsts) {
+      issues.push({
+        title: isSpanish ? "Políticas de seguridad ausentes" : "Security policies missing",
+        why: isSpanish ? "Faltan headers como CSP o HSTS que protegen contra ataques." : "Missing security headers like CSP or HSTS protects against common attacks.",
+        fix: isSpanish ? "Configurar headers de seguridad en el servidor." : "Configure security headers on your server.",
+        impact: "medium"
+      });
+    }
+
     if (!seoSignals.title) {
       issues.push({
-        title: "Missing <title>",
-        why: "Search engines and users need a clear title to understand the page.",
-        fix: "Add a unique, keyword-focused <title> for each important page.",
+        title: isSpanish ? "Falta etiqueta <title>" : "Missing <title>",
+        why: isSpanish ? "Los motores de búsqueda y usuarios necesitan un título claro." : "Search engines and users need a clear title to understand the page.",
+        fix: isSpanish ? "Añadí un <title> único y enfocado en palabras clave." : "Add a unique, keyword-focused <title> for each important page.",
         impact: "high"
       });
     }
-    if (!seoSignals.metaDescription) {
-      issues.push({
-        title: "Missing meta description",
-        why: "Without it, search snippets are weaker and CTR can drop.",
-        fix: "Add a compelling 140–160 char description with value proposition.",
-        impact: "medium"
-      });
-    }
-    if (!seoSignals.h1) {
-      issues.push({
-        title: "No H1 heading detected",
-        why: "H1 helps users and crawlers understand page hierarchy.",
-        fix: "Add one clear H1 aligned with the main offer.",
-        impact: "medium"
-      });
-    }
-    if (!hasViewport) {
-      issues.push({
-        title: "Missing viewport meta",
-        why: "Mobile rendering may be broken and hurt UX/conversion.",
-        fix: "Add <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">.",
-        impact: "high"
-      });
-    }
+
     if (!hasForm && !hasWhatsapp) {
       issues.push({
-        title: "Weak lead capture",
-        why: "No form or direct chat channel reduces conversion chances.",
-        fix: "Add a short contact form or WhatsApp entry point above the fold.",
+        title: isSpanish ? "Captura de leads débil" : "Weak lead capture",
+        why: isSpanish ? "Sin formulario o chat directo se pierden oportunidades." : "No form or direct chat channel reduces conversion chances.",
+        fix: isSpanish ? "Añadí un formulario corto o botón de WhatsApp visible." : "Add a short contact form or WhatsApp entry point above the fold.",
         impact: "high"
       });
     }
 
-    if (scriptCount > 25) {
-      quickWins.push({
-        title: "Reduce script weight",
-        how: "Remove unused third-party scripts and defer non-critical JS.",
-        impact: "high"
-      });
-    }
     if (!hasCta) {
       quickWins.push({
-        title: "Add a clear primary CTA",
-        how: "Include one visible action button in the hero (quote/call/proposal).",
+        title: isSpanish ? "Añadir CTA principal" : "Add a clear primary CTA",
+        how: isSpanish ? "Incluí un botón de acción visible (solicitar/agendar)." : "Include one visible action button in the hero (quote/call/proposal).",
         impact: "high"
       });
     }
-    if (!hasChat && !hasWhatsapp) {
+    if (!hasChat && !hasAutomationHints) {
       quickWins.push({
-        title: "Add conversational channel",
-        how: "Enable website chat or WhatsApp for faster qualification.",
-        impact: "medium"
-      });
-    }
-
-    if (quickWins.length === 0) {
-      quickWins.push({
-        title: "Strengthen trust signals",
-        how: "Add testimonials, logos, and response-time promises near CTA.",
-        impact: "medium"
+        title: isSpanish ? "Automatizar atención al cliente" : "Automate Customer Support",
+        how: isSpanish ? "Integrar un agente de IA para responder dudas 24/7." : "Integrate an AI Agent to answer queries 24/7.",
+        impact: "high"
       });
     }
 
@@ -278,32 +329,8 @@ Deno.serve(async (req) => {
       ok: true,
       url,
       tech,
-      signals: {
-        title,
-        metaDescription,
-        h1,
-        viewport: hasViewport,
-        canonical,
-        robots,
-        https: usesHttps,
-        analytics,
-        scriptCount,
-        htmlSizeKb,
-        hasContact,
-        hasForm,
-        hasCta,
-        hasWhatsapp,
-        hasChat,
-        hasFaq,
-        hasAutomationHints
-      },
-      metrics: {
-        seoBasics,
-        mobile,
-        conversion,
-        aiReadiness,
-        performance
-      },
+      signals: seoSignals,
+      metrics,
       scoreTotal,
       issues,
       quickWins

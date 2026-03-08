@@ -31,6 +31,7 @@ export interface Report {
   summary: string;
   opportunities: string[];
   risks: string[];
+  roadmap: string[];
   created_at: string;
 }
 
@@ -58,6 +59,9 @@ export interface AuditFunctionResult {
     conversion: number;
     aiReadiness: number;
     performance: number;
+    speed: number;
+    security: number;
+    accessibility: number;
   };
   scoreTotal: number;
   issues: AuditIssue[];

@@ -79,62 +79,141 @@ export default function AdminPage() {
 
   return (
     <section className="admin-shell">
-      <div className="card">
-        <h2>Consola Admin</h2>
-        <p className="muted">Ruta activa: <code>/admin</code></p>
-        <div className="grid">
-          <div><p className="muted">Leads totales</p><p className="kpi">{totals.total}</p></div>
-          <div><p className="muted">Nuevos</p><p className="kpi">{totals.new}</p></div>
-          <div><p className="muted">Ganados</p><p className="kpi">{totals.won}</p></div>
+      <header className="topbar">
+        <div className="logo">RIWEB ADMIN</div>
+        <div className="muted" style={{ color: 'rgba(255,255,255,0.6)' }}>v2.0 Liquid Glass</div>
+      </header>
+
+      <div id="app">
+        <div className="hero" style={{ marginBottom: '2rem' }}>
+          <h1>Panel de Control</h1>
+          <p className="muted">Gestioná tus leads y auditorías con inteligencia.</p>
         </div>
-      </div>
 
-      <div className="card admin-layout">
-        <div>
-          <h3>Leads</h3>
-          {loading ? <p className="muted">Cargando...</p> : null}
-          {!loading && leads.length === 0 ? <p className="muted">Sin leads todavía.</p> : null}
-
-          <div className="admin-list">
-            {leads.map((lead) => (
-              <button
-                key={lead.id}
-                type="button"
-                className={`admin-list-item ${selectedLeadId === lead.id ? "active" : ""}`}
-                onClick={() => setSelectedLeadId(lead.id)}
-              >
-                <strong>{lead.email}</strong>
-                <span className="muted">{lead.url}</span>
-                <span className="badge">{lead.status}</span>
-              </button>
-            ))}
+        <div className="grid" style={{ marginBottom: '2rem' }}>
+          <div className="card">
+            <p className="muted">Leads totales</p>
+            <p className="kpi">{totals.total}</p>
+          </div>
+          <div className="card">
+            <p className="muted">Nuevos / Pendientes</p>
+            <p className="kpi" style={{ color: 'var(--color-cta)' }}>{totals.new}</p>
+          </div>
+          <div className="card">
+            <p className="muted">Convertidos (Won)</p>
+            <p className="kpi" style={{ color: '#10b981' }}>{totals.won}</p>
           </div>
         </div>
 
-        <div>
-          <h3>Detalle</h3>
-          {!selectedLead ? <p className="muted">Seleccioná un lead.</p> : (
-            <form onSubmit={save}>
-              <label>Email</label>
-              <input value={selectedLead.email} disabled />
+        <div className="row" style={{ alignItems: 'flex-start' }}>
+          <div className="card" style={{ flex: '1 1 300px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <h3 style={{ margin: 0 }}>Leads Recientes</h3>
+              {loading && <span className="badge">Cargando...</span>}
+            </div>
 
-              <label>URL</label>
-              <input value={selectedLead.url} disabled />
+            {!loading && leads.length === 0 ? <p className="muted">Aún no hay leads registrados.</p> : null}
 
-              <label>Estado</label>
-              <select value={status} onChange={(e) => setStatus(e.target.value as LeadStatus)}>
-                {statuses.map((value) => <option key={value} value={value}>{value}</option>)}
-              </select>
+            <div className="admin-list" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {leads.map((lead) => (
+                <div
+                  key={lead.id}
+                  className={`card ${selectedLeadId === lead.id ? "active-lead" : ""}`}
+                  style={{
+                    padding: '1rem',
+                    cursor: 'pointer',
+                    border: selectedLeadId === lead.id ? '2px solid var(--color-cta)' : '1px solid var(--glass-border)',
+                    backgroundColor: selectedLeadId === lead.id ? 'rgba(202, 138, 4, 0.05)' : 'var(--glass-bg)',
+                    marginBottom: 0
+                  }}
+                  onClick={() => setSelectedLeadId(lead.id)}
+                >
+                  <div style={{ fontWeight: 600 }}>{lead.email}</div>
+                  <div className="muted" style={{ fontSize: '0.75rem', wordBreak: 'break-all' }}>{lead.url}</div>
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <span className="badge" style={{
+                      backgroundColor: lead.status === 'won' ? '#d1fae5' : lead.status === 'lost' ? '#fee2e2' : '#fefce8',
+                      color: lead.status === 'won' ? '#065f46' : lead.status === 'lost' ? '#991b1b' : '#854d0e'
+                    }}>
+                      {lead.status.toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-              <label>Notas</label>
-              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={4} placeholder="Próximo paso comercial..." />
+          <div className="card" style={{ flex: '1 1 500px', position: 'sticky', top: '2rem' }}>
+            <h3 style={{ margin: 0 }}>Detalle del Lead</h3>
+            {!selectedLead ? (
+              <div style={{ padding: '4rem 0', textAlign: 'center' }}>
+                <p className="muted">Seleccioná un lead de la lista para ver todos los detalles y gestionar su estado.</p>
+              </div>
+            ) : (
+              <form onSubmit={save} style={{ marginTop: '1.5rem' }}>
+                <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <label>Email</label>
+                    <input value={selectedLead.email} disabled style={{ backgroundColor: '#f1f5f9' }} />
+                  </div>
+                  <div>
+                    <label>URL del Sitio</label>
+                    <input value={selectedLead.url} disabled style={{ backgroundColor: '#f1f5f9' }} />
+                  </div>
+                </div>
 
-              <button disabled={saving} type="submit">{saving ? "Guardando..." : "Guardar cambios"}</button>
-            </form>
-          )}
-          {error ? <p className="error-text">{error}</p> : null}
+                <div style={{ marginBottom: '1rem' }}>
+                  <label>Cambiar Estado</label>
+                  <select value={status} onChange={(e) => setStatus(e.target.value as LeadStatus)}>
+                    {statuses.map((value) => <option key={value} value={value}>{value.toUpperCase()}</option>)}
+                  </select>
+                </div>
+
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <label>Notas Internas</label>
+                  <textarea
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    rows={6}
+                    placeholder="Escribí aquí observaciones, próximos pasos o detalles de la llamada..."
+                  />
+                </div>
+
+                <button
+                  disabled={saving}
+                  type="submit"
+                  style={{
+                    marginTop: '1rem',
+                    boxShadow: 'var(--shadow-md)'
+                  }}
+                >
+                  {saving ? "Guardando cambios..." : "Guardar Actualización"}
+                </button>
+                {error ? <p className="error-text" style={{ textAlign: 'center' }}>{error}</p> : null}
+              </form>
+            )}
+          </div>
         </div>
       </div>
+
+      <style>{`
+        .active-lead {
+          box-shadow: var(--shadow-lg) !important;
+        }
+        label {
+          display: block;
+          font-size: 0.75rem;
+          font-weight: 600;
+          margin-bottom: 0.25rem;
+          text-transform: uppercase;
+          letter-spacing: 0.025em;
+          color: var(--color-secondary);
+        }
+        .admin-shell {
+          min-height: 100vh;
+          padding-bottom: 4rem;
+        }
+      `}</style>
     </section>
   );
 }

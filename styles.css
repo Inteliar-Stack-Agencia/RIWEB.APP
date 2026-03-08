@@ -1,26 +1,169 @@
-:root { color-scheme: light; }
-* { box-sizing: border-box; font-family: Inter, system-ui, sans-serif; }
-body { margin: 0; background: #f7f8fb; color: #0f172a; }
-.topbar { display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; background:#0f172a; color:white; }
-.topbar a { color:white; margin-right:1rem; text-decoration:none; }
-.logo { font-weight:700; letter-spacing:.05em; }
-#app { max-width: 980px; margin: 2rem auto; padding: 0 1rem 3rem; }
-.card { background:white; border-radius:16px; padding:1.25rem; margin-bottom:1rem; box-shadow:0 8px 30px rgba(15,23,42,.08); }
-.hero h1 { font-size: 2rem; margin-bottom:.5rem; }
-input, select, textarea, button { width:100%; padding:.75rem .9rem; border-radius:10px; border:1px solid #cbd5e1; margin-top:.5rem; }
-button { background:#2563eb; color:white; border:none; cursor:pointer; font-weight:600; }
-button:hover { opacity:.95; }
-.ghost-btn { width:auto; background:transparent; border:1px solid #94a3b8; padding:.4rem .8rem; color:white; }
-.grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
-.badge { display:inline-block; background:#dbeafe; color:#1e3a8a; padding:.2rem .5rem; border-radius:999px; font-size:.8rem; margin-right:.5rem; }
-.kpi { font-size: 1.75rem; font-weight: 700; margin: .25rem 0; }
-.muted { color:#475569; }
-.list { padding-left:1.2rem; }
-.loading-step { background:#e2e8f0; border-radius:999px; overflow:hidden; height:10px; margin:.75rem 0; }
-.loading-step span { display:block; height:100%; background:#2563eb; width:0%; animation:load 1.8s linear infinite; }
-@keyframes load { from { width: 0%; } to { width: 100%; } }
-.row { display:flex; gap:.75rem; }
-.row > * { flex:1; }
-.table { width:100%; border-collapse:collapse; }
-.table th, .table td { text-align:left; padding:.65rem; border-bottom:1px solid #e2e8f0; }
-.link { color:#2563eb; text-decoration:none; font-weight:600; }
+:root {
+    /* Liquid Glass - Design System 2026 */
+    --color-primary: #1C1917;
+    --color-secondary: #44403C;
+    --color-cta: #CA8A04;
+    --color-background: #FAFAF9;
+    --color-text: #0C0A09;
+
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+    --font-heading: 'Satoshi', sans-serif;
+    --font-body: 'General Sans', sans-serif;
+
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+
+    color-scheme: light;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: var(--font-body);
+}
+
+body {
+    margin: 0;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--color-primary);
+    color: white;
+}
+
+.topbar a {
+    color: white;
+    margin-right: 1rem;
+    text-decoration: none;
+    transition: opacity 200ms ease;
+}
+
+.topbar a:hover {
+    opacity: 0.8;
+}
+
+.logo {
+    font-weight: 700;
+    letter-spacing: .05em;
+}
+
+#app {
+    max-width: 980px;
+    margin: 2rem auto;
+    padding: 0 1rem 3rem;
+}
+
+.card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--glass-shadow);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.hero h1 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    margin-bottom: .5rem;
+}
+
+input,
+select,
+textarea,
+button {
+    width: 100%;
+    padding: .75rem .9rem;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    margin-top: .5rem;
+    font-size: 1rem;
+}
+
+button {
+    background: var(--color-cta);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: filter 200ms ease, transform 150ms active;
+}
+
+button:hover {
+    filter: brightness(1.1);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+.ghost-btn {
+    width: auto;
+    background: transparent;
+    border: 1px solid var(--color-secondary);
+    padding: .4rem .8rem;
+    color: var(--color-secondary);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.badge {
+    display: inline-block;
+    background: #fefce8;
+    color: #854d0e;
+    padding: .2rem .6rem;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 600;
+    margin-right: .5rem;
+}
+
+.kpi {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: .25rem 0;
+    color: var(--color-primary);
+}
+
+.muted {
+    color: var(--color-secondary);
+    font-size: 0.9rem;
+}
+
+.error-text {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
