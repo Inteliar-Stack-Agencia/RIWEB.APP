@@ -66,4 +66,5 @@ export interface AuditFunctionResult {
   scoreTotal: number;
   issues: AuditIssue[];
   quickWins: AuditQuickWin[];
+  report?: any;
 }
