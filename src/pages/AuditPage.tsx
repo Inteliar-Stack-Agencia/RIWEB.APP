@@ -374,6 +374,8 @@ export default function AuditPage({ locale }: { locale: Locale }) {
           </div>
         </div>
       )}
+
+      {analysis && <FuturePreview audit={analysis} report={analysis.report} locale={locale} />}
     </div>
   );
 }

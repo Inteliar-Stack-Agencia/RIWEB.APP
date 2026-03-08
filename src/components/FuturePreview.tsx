@@ -3,22 +3,33 @@ import type { AuditFunctionResult, Locale } from '../types';
 
 interface FuturePreviewProps {
     audit: AuditFunctionResult;
+    report: any;
     locale: Locale;
 }
 
-export function FuturePreview({ audit, locale }: FuturePreviewProps) {
+export function FuturePreview({ audit, report, locale }: FuturePreviewProps) {
     const isSpanish = locale === 'es';
+    const mockup = report?.mockup || {
+        headline: isSpanish ? "Tu Web en 2026" : "Your Web in 2026",
+        bot_intro: isSpanish
+            ? "Hola, soy tu RI-Agent. He analizado tu sitio y puedo automatizar tus ventas hoy mismo."
+            : "Hi, I'm your RI-Agent. I've analyzed your site and can automate your sales today.",
+        recommended_accent: '#ca8a04'
+    };
 
     return (
         <div className="future-preview-container" style={{ marginTop: '4rem', padding: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid var(--glass-border)' }}>
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>
-                    {isSpanish ? "Tu Web en 2026" : "Your Web in 2026"}
+                <div style={{ padding: '0.4rem 1rem', background: 'rgba(202, 138, 4, 0.1)', color: 'var(--color-cta)', borderRadius: '99px', display: 'inline-block', fontSize: '0.7rem', fontWeight: 800, marginBottom: '1rem', border: '1px solid var(--color-cta)' }}>
+                    {isSpanish ? "VISTA PREVIA ESTRATÉGICA" : "STRATEGIC PREVIEW"}
+                </div>
+                <h2 style={{ fontSize: '2.8rem', marginBottom: '1rem', lineHeight: 1.1 }}>
+                    {mockup.headline}
                 </h2>
-                <p className="muted" style={{ fontSize: '1.2rem' }}>
+                <p className="muted" style={{ fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto' }}>
                     {isSpanish
-                        ? "Hemos proyectado tu negocio con nuestro stack de modernización e IA."
-                        : "We have projected your business with our modernization and AI stack."}
+                        ? "Esta es la proyección de tu negocio tras la inyección de IA y modernización profunda."
+                        : "This is your business projection after AI injection and deep modernization."}
                 </p>
             </div>
 
