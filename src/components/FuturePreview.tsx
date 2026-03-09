@@ -10,11 +10,8 @@ interface FuturePreviewProps {
     locale: Locale;
 }
 
-type Tab = 'help' | 'store' | 'dashboard' | 'assistant';
-
 export function FuturePreview({ audit, report, locale }: FuturePreviewProps) {
     const isSpanish = locale === 'es';
-    const [activeTab, setActiveTab] = useState<Tab>('help');
     const [cart, setCart] = useState<{ product: Product; qty: number }[]>([]);
     const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
     const [checkoutForm, setCheckoutForm] = useState({ name: '', email: '', address: '' });
@@ -59,152 +56,102 @@ export function FuturePreview({ audit, report, locale }: FuturePreviewProps) {
     };
 
     return (
-        <div className="future-preview-container" style={{ marginTop: '4rem', padding: '2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid var(--glass-border)', position: 'relative' }}>
-            <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
-                <div style={{ padding: '0.4rem 1rem', background: 'rgba(202, 138, 4, 0.1)', color: 'var(--color-cta)', borderRadius: '99px', display: 'inline-block', fontSize: '0.7rem', fontWeight: 800, marginBottom: '1rem', border: '1px solid var(--color-cta)' }}>
-                    {isSpanish ? "VISTA PREVIA ESTRATÉGICA" : "STRATEGIC PREVIEW"}
+        <div className="future-preview-container" style={{ marginTop: '4rem', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--glass-border)', position: 'relative' }}>
+            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                <div style={{ padding: '0.4rem 1.5rem', background: 'linear-gradient(90deg, rgba(248, 113, 113, 0.1) 0%, rgba(202, 138, 4, 0.1) 100%)', color: 'white', borderRadius: '99px', display: 'inline-block', fontSize: '0.75rem', fontWeight: 800, marginBottom: '1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    {isSpanish ? "EVOLUCIÓN DIGITAL 2026" : "2026 DIGITAL EVOLUTION"}
                 </div>
-                <h2 style={{ fontSize: '2.8rem', marginBottom: '1rem', lineHeight: 1.1 }}>
-                    {mockup.headline}
+                <h2 style={{ fontSize: '3rem', marginBottom: '1rem', lineHeight: 1.1, fontWeight: 800 }}>
+                    {isSpanish ? "De Supervivencia a Liderazgo" : "From Survival to Leadership"}
                 </h2>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                    {(['help', 'store', 'dashboard', 'assistant'] as Tab[]).map(tab => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            style={{
-                                padding: '0.6rem 1.5rem',
-                                borderRadius: '12px',
-                                background: activeTab === tab ? 'var(--color-cta)' : 'rgba(255,255,255,0.05)',
-                                color: activeTab === tab ? 'white' : 'var(--text-muted)',
-                                border: '1px solid ' + (activeTab === tab ? 'var(--color-cta)' : 'rgba(255,255,255,0.1)'),
-                                cursor: 'pointer', fontWeight: 600, textTransform: 'uppercase', fontSize: '0.75rem'
-                            }}
-                        >
-                            {isSpanish
-                                ? (tab === 'help' ? '❓ Guía' : tab === 'store' ? '🛒 Tienda' : tab === 'dashboard' ? '📊 Dashboard' : '🤖 Asistente')
-                                : (tab === 'help' ? '❓ Guide' : tab === 'store' ? '🛒 Shop' : tab === 'dashboard' ? '📊 Dashboard' : '🤖 Assistant')}
-                        </button>
-                    ))}
-                </div>
+                <p className="muted" style={{ maxWidth: '700px', margin: '0 auto', fontSize: '1.1rem' }}>
+                    {isSpanish
+                        ? "Compará cómo rinde una web tradicional frente al potencial de la modernización con IA de RiWeb."
+                        : "Compare how a traditional web performs against the potential of RiWeb's AI modernization."}
+                </p>
             </div>
 
-            {activeTab === 'help' && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                    <div className="card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🛍️</div>
-                        <h4 style={{ color: 'var(--color-cta)' }}>{isSpanish ? "La Tienda" : "The Shop"}</h4>
-                        <p className="muted" style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
-                            {isSpanish
-                                ? "Es tu vidriera digital moderna. Aquí los clientes ven tus fotos HD que cargan rapidísimo para que no se aburran y se vayan."
-                                : "It's your modern digital storefront. Here customers see HD photos that load super fast so they don't get bored and leave."}
-                        </p>
+            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '3rem' }}>
+                {/* --- LEGACY SIDE (Vidriería Florida) --- */}
+                <div className="card legacy-view" style={{ padding: '2rem', background: 'rgba(248, 113, 113, 0.03)', border: '1px dashed rgba(248, 113, 113, 0.3)', position: 'relative', opacity: 0.8 }}>
+                    <div style={{ position: 'absolute', top: '-12px', left: '20px', padding: '2px 10px', background: '#f87171', color: 'white', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 900 }}>
+                        {isSpanish ? "WEB TRADICIONAL (VIDRIERÍA FLORIDA)" : "TRADITIONAL WEB (VIDRIERÍA FLORIDA)"}
                     </div>
-                    <div className="card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>✨</div>
-                        <h4 style={{ color: 'var(--color-cta)' }}>{isSpanish ? "Autocompletar con IA" : "AI Autofill"}</h4>
-                        <p className="muted" style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
-                            {isSpanish
-                                ? "Un 'secretario mágico' que llena los datos de la persona por ella. ¡Ideal para que compren rápido sin tener que escribir tanto!"
-                                : "A 'magic secretary' that fills out the person's info for them. Perfect for fast shopping without typing much!"}
-                        </p>
+
+                    <div style={{ marginBottom: '2rem' }}>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 700, color: '#f87171', marginBottom: '0.5rem' }}>🔴 {isSpanish ? "Información Estática" : "Static Information"}</div>
+                        <p className="muted" style={{ fontSize: '0.9rem' }}>{isSpanish ? "Catálogo que no vende. El cliente debe llamar o ir al local para saber precios." : "Catalog that doesn't sell. Customer must call or visit the shop for prices."}</p>
                     </div>
-                    <div className="card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>📊</div>
-                        <h4 style={{ color: 'var(--color-cta)' }}>{isSpanish ? "El Dashboard" : "The Dashboard"}</h4>
-                        <p className="muted" style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
-                            {isSpanish
-                                ? "Un dibujo fácil de entender que te dice cuánta gente más entró a tu web y cuánto tiempo te ahorraste gracias a los robots."
-                                : "An easy-to-understand chart that tells you how many more people came to your site and how much time you saved thanks to robots."}
-                        </p>
+
+                    <div className="card" style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(248,113,113,0.1)', marginBottom: '1.5rem' }}>
+                        <div style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>{isSpanish ? "MÉTODO DE CONTACTO" : "CONTACT METHOD"}</div>
+                        <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>📞 {isSpanish ? "Llamar a Galería Embassy" : "Call Embassy Gallery"}</div>
                     </div>
-                    <div className="card" style={{ padding: '1.5rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🤖</div>
-                        <h4 style={{ color: 'var(--color-cta)' }}>{isSpanish ? "El Asistente" : "The Assistant"}</h4>
-                        <p className="muted" style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>
-                            {isSpanish
-                                ? "Un robotito inteligente que atiende las dudas de tus clientes incluso cuando vos estás durmiendo o descansando."
-                                : "A smart robot that answers customer questions even when you are sleeping or resting."}
-                        </p>
+
+                    <div style={{ padding: '1.5rem', border: '1px solid rgba(248, 113, 113, 0.2)', borderRadius: '12px', textAlign: 'center', background: 'rgba(248, 113, 113, 0.05)' }}>
+                        <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>📉</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>{isSpanish ? "Fuga de Clientes 40%" : "40% Customer Leakage"}</div>
+                        <p className="muted" style={{ fontSize: '0.75rem', marginTop: '0.4rem' }}>{isSpanish ? "Muchos ven los productos pero se van sin consultar por falta de respuesta inmediata." : "Many see products but leave without asking due to lack of immediate response."}</p>
                     </div>
                 </div>
-            )}
 
-            {activeTab === 'store' && (
-                <div>
-                    <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-                        {CATALOG.map((product, i) => (
-                            <div key={product.id} className="card" style={{ padding: '1rem', position: 'relative' }}>
-                                <img src={product.image} alt="" style={{ width: '100%', height: '160px', objectFit: 'cover', borderRadius: '12px', marginBottom: '1rem' }} />
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                    <h5 style={{ margin: 0, fontSize: '1rem' }}>{isSpanish ? product.name_es : product.name_en}</h5>
-                                    <span style={{ fontWeight: 700, color: 'var(--color-cta)' }}>${product.price}</span>
-                                </div>
-                                <div style={{ display: 'flex', gap: '4px', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-                                    {product.tags.map(tag => (
-                                        <span key={tag} style={{ fontSize: '0.6rem', padding: '2px 6px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', color: 'var(--text-muted)' }}>{tag}</span>
-                                    ))}
-                                </div>
+                {/* --- MODERN 2026 SIDE (RiWeb Modernized) --- */}
+                <div className="card modern-2026-view" style={{ padding: '2rem', background: 'rgba(202, 138, 4, 0.05)', border: '2px solid var(--color-cta)', position: 'relative', boxShadow: '0 0 40px rgba(202, 138, 4, 0.15)' }}>
+                    <div style={{ position: 'absolute', top: '-12px', left: '20px', padding: '2px 10px', background: 'var(--color-cta)', color: 'white', borderRadius: '4px', fontSize: '0.65rem', fontWeight: 900 }}>
+                        {isSpanish ? "WEB MODERNIZADA 2026 (RIWEB)" : "2026 MODERNIZED WEB (RIWEB)"}
+                    </div>
+
+                    <div style={{ marginBottom: '2rem' }}>
+                        <div style={{ fontSize: '1.8rem', fontWeight: 700, color: 'var(--color-cta)', marginBottom: '0.5rem' }}>✨ {isSpanish ? "Cotización IA al Instante" : "Instant AI Quote"}</div>
+                        <p className="muted" style={{ fontSize: '0.9rem' }}>{isSpanish ? "Tus clientes compran vidrios y espejos a medida con presupuesto automático y cierre por WhatsApp." : "Your customers buy tailor-made glass and mirrors with automatic quotes and WhatsApp closing."}</p>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.8rem', marginBottom: '2rem' }}>
+                        {[
+                            { id: 'v1', n_es: 'Espejo Biselado', n_en: 'Beveled Mirror', p: 8500, img: 'https://images.unsplash.com/photo-1618220179428-22790b461013?w=400' },
+                            { id: 'v2', n_es: 'Mampara Glass', n_en: 'Glass Partition', p: 45000, img: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400' }
+                        ].map((product) => (
+                            <div key={product.id} className="card" style={{ padding: '0.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                <img src={product.img} alt="" style={{ width: '100%', height: '60px', objectFit: 'cover', borderRadius: '8px', marginBottom: '0.4rem' }} />
+                                <div style={{ fontSize: '0.65rem', fontWeight: 700, marginBottom: '0.2rem' }}>{isSpanish ? product.n_es : product.n_en}</div>
+                                <div style={{ fontSize: '0.7rem', color: 'var(--color-cta)', fontWeight: 800, marginBottom: '0.3rem' }}>${product.p}</div>
                                 <button
-                                    onClick={() => addToCart(product)}
-                                    className="btn-primary"
-                                    style={{ width: '100%', marginTop: '1rem', padding: '0.6rem', fontSize: '0.85rem' }}
+                                    onClick={() => alert(isSpanish ? "¡Un agente IA está procesando tu pedido de Vidrio!" : "An AI agent is processing your Glass order!")}
+                                    style={{ background: 'var(--color-cta)', border: 'none', color: 'white', borderRadius: '4px', width: '100%', padding: '4px', fontSize: '0.6rem', fontWeight: 800, cursor: 'pointer' }}
                                 >
-                                    {i === 0 ? (
-                                        <InteractiveTooltip text={isSpanish ? "Añadí productos para ver la potencia del carrito optimizado." : "Add products to see the power of the optimized cart."}>
-                                            {isSpanish ? "Añadir al Carrito" : "Add to Cart"}
-                                        </InteractiveTooltip>
-                                    ) : (isSpanish ? "Añadir al Carrito" : "Add to Cart")}
+                                    {isSpanish ? "Solicitar Cotización" : "Get Quote"}
                                 </button>
                             </div>
                         ))}
                     </div>
 
-                    {cart.length > 0 && (
-                        <div style={{
-                            position: 'sticky', bottom: '20px', background: 'var(--color-cta)',
-                            color: 'white', padding: '1rem 2rem', borderRadius: '16px',
-                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                            boxShadow: '0 10px 30px rgba(0,0,0,0.3)', marginTop: '2rem', zIndex: 100
-                        }}>
-                            <div>
-                                <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>Total: ${cartTotal}</span>
-                                <span style={{ marginLeft: '1rem', opacity: 0.8 }}>{cart.length} items</span>
-                            </div>
-                            <button onClick={() => setIsCheckoutOpen(true)} className="btn-white" style={{ padding: '0.5rem 1.5rem', fontSize: '0.9rem' }}>
-                                {isSpanish ? "Finalizar Compra ➜" : "Checkout ➜"}
-                            </button>
+                    <div className="grid" style={{ gap: '1rem' }}>
+                        <div style={{ flex: 1, background: 'rgba(16, 185, 129, 0.08)', padding: '1rem', borderRadius: '12px', textAlign: 'center', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#10b981' }}>- 90%</div>
+                            <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>{isSpanish ? "Tiempo de Venta" : "Sales Time"}</div>
                         </div>
-                    )}
-                </div>
-            )}
-
-            {activeTab === 'dashboard' && (
-                <div className="grid">
-                    <div className="card">
-                        <h4 style={{ color: 'var(--color-cta)' }}>{isSpanish ? "Crecimiento de Conversión" : "Conversion Growth"}</h4>
-                        <div style={{ height: '150px', display: 'flex', alignItems: 'flex-end', gap: '8px', padding: '1rem 0' }}>
-                            {[30, 45, 40, 65, 85, 95].map((h, i) => (
-                                <div key={i} style={{ flex: 1, height: `${h}%`, background: 'var(--color-cta)', borderRadius: '4px', opacity: 0.3 + (i * 0.15) }} />
-                            ))}
-                        </div>
-                        <p className="muted" style={{ fontSize: '0.85rem' }}>{isSpanish ? "Incremento proyectado del 210% en captación de leads." : "Projected 210% increase in lead acquisition."}</p>
-                    </div>
-                    <div className="card">
-                        <h4 style={{ color: '#10b981' }}>{isSpanish ? "Velocidad de Respuesta" : "Response Speed"}</h4>
-                        <div style={{ textAlign: 'center', padding: '1rem' }}>
-                            <div style={{ fontSize: '3rem', fontWeight: 800, color: '#10b981' }}>- 85%</div>
-                            <p className="muted">{isSpanish ? "Tiempo de respuesta reducido mediante Agentes IA" : "Response time reduced via AI Agents"}</p>
+                        <div style={{ flex: 1, background: 'rgba(202, 138, 4, 0.08)', padding: '1rem', borderRadius: '12px', textAlign: 'center', border: '1px solid rgba(202, 138, 4, 0.2)' }}>
+                            <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--color-cta)' }}>+ 300%</div>
+                            <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>{isSpanish ? "Conversión 24/7" : "24/7 Conversion"}</div>
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
 
-            {activeTab === 'assistant' && (
-                <div className="card" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-                    <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🤖</div>
-                    <h3>{isSpanish ? "El Asistente está Activo" : "The Assistant is Active"}</h3>
-                    <p className="muted">{isSpanish ? "Abrí el widget flotante en la esquina inferior derecha para chatear con la IA." : "Open the floating widget in the bottom right corner to chat with the AI."}</p>
+            {cart.length > 0 && (
+                <div style={{
+                    position: 'sticky', bottom: '20px', background: 'var(--color-cta)',
+                    color: 'white', padding: '1rem 2rem', borderRadius: '16px',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.3)', marginTop: '2rem', zIndex: 100
+                }}>
+                    <div>
+                        <span style={{ fontWeight: 700, fontSize: '1.1rem' }}>Total: ${cartTotal}</span>
+                        <span style={{ marginLeft: '1rem', opacity: 0.8 }}>{cart.length} items</span>
+                    </div>
+                    <button onClick={() => setIsCheckoutOpen(true)} className="btn-white" style={{ padding: '0.5rem 1.5rem', fontSize: '0.9rem' }}>
+                        {isSpanish ? "Ver Carrito ➜" : "View Cart ➜"}
+                    </button>
                 </div>
             )}
 
@@ -226,9 +173,7 @@ export function FuturePreview({ audit, report, locale }: FuturePreviewProps) {
                                 <form onSubmit={handlePurchase}>
                                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
                                         <button type="button" onClick={handleAutofill} style={{ background: 'rgba(202,138,4,0.1)', color: 'var(--color-cta)', border: '1px solid var(--color-cta)', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' }}>
-                                            <InteractiveTooltip text={isSpanish ? "Probá el autocompletado con IA para una experiencia friccion-cero." : "Try AI autofill for a zero-friction experience."}>
-                                                ✨ {isSpanish ? "Autocompletar con IA" : "AI Autofill"}
-                                            </InteractiveTooltip>
+                                            ✨ {isSpanish ? "Autocompletar con IA" : "AI Autofill"}
                                         </button>
                                     </div>
                                     <div style={{ gap: '1rem', display: 'flex', flexDirection: 'column' }}>
@@ -248,10 +193,17 @@ export function FuturePreview({ audit, report, locale }: FuturePreviewProps) {
 
             <AIAssistantWidget locale={locale} auditUrl={audit.url} />
 
-            <div style={{ marginTop: '4rem', textAlign: 'center' }}>
-                <button className="btn-primary" style={{ padding: '1.25rem 3rem', fontSize: '1.2rem' }}>
-                    {isSpanish ? "✦ Solicitar esta Modernización" : "✦ Request this Modernization"}
+            <div style={{ marginTop: '5rem', textAlign: 'center' }}>
+                <button
+                    className="btn-primary"
+                    style={{ padding: '1.5rem 4rem', fontSize: '1.4rem', boxShadow: '0 0 30px rgba(202, 138, 4, 0.4)', borderRadius: '99px' }}
+                    onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                >
+                    {isSpanish ? "✦ Quiero mi Web 2026 Ahora" : "✦ I Want my 2026 Web Now"}
                 </button>
+                <p className="muted" style={{ marginTop: '1.5rem' }}>
+                    {isSpanish ? "Plan estratégico bonificado por tiempo limitado." : "Complimentary strategic plan for a limited time."}
+                </p>
             </div>
         </div>
     );

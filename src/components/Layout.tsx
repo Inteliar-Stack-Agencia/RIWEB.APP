@@ -1,4 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
+import Footer from "./Footer";
+
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -21,7 +23,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className="topbar">
-        <Link to="/" className="logo">RIWEB.APP</Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <Link to={isEs ? "/es" : "/"} className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src="/logo-new.png" alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '6px' }} />
+            RIWEB.APP
+          </Link>
+          <span className="pro-badge">PRO</span>
+        </div>
         <nav>
           <Link to={isEs ? "/es" : "/"} style={navLinkStyle(isHome)}>Home</Link>
           <Link to={isEs ? "/es/audit" : "/audit"} style={navLinkStyle(isAudit)}>Audit</Link>
@@ -29,6 +37,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
       <main id="app">{children}</main>
+      <Footer />
     </>
+
   );
 }

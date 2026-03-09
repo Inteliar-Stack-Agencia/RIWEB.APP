@@ -2,77 +2,73 @@ import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Locale } from "../types";
 
-// Lines that cycle in the code simulation
-const CODE_LINES = [
-  { text: 'const audit = await riweb.scan(legacy_url);', color: '#a78bfa' },
-  { text: 'if (is_old_code) modernize_stack();', color: '#34d399' },
-  { text: 'const aiAgent = await deploy_ai_asistente();', color: '#60a5fa' },
-  { text: 'db.leads.convert({ source: "old_site" });', color: '#f59e0b' },
-  { text: 'optimize_loading_speed({ target: "< 1s" });', color: '#34d399' },
-  { text: 'return { modernized: true, sales_boost: "+200%" };', color: '#34d399' },
-  { text: 'await deploy_next_gen_web({ ia_integrated: true });', color: '#a78bfa' },
-  { text: 'metrics.push({ new_customers: 24, roi: "8x" });', color: '#60a5fa' },
-];
-
-function CodeSimulation() {
-  const [visibleLines, setVisibleLines] = useState<{ text: string; color: string; id: number }[]>([]);
-
-  useEffect(() => {
-    let idx = 0;
-    let lineId = 0;
-
-    const interval = setInterval(() => {
-      const line = CODE_LINES[idx % CODE_LINES.length];
-      setVisibleLines(prev => {
-        const next = [...prev, { ...line, id: lineId++ }];
-        return next.slice(-6); // show max 6 lines
-      });
-      idx++;
-    }, 900);
-
-    return () => clearInterval(interval);
-  }, []);
+function FeatureList({ locale }: { locale: Locale }) {
+  const steps = locale === "es"
+    ? [
+      { text: "Hoy todo se busca en internet", icon: "🔍" },
+      { text: "Tu negocio o marca debe aparecer ahí", icon: "📍" },
+      { text: "RiWeb lo hace posible en pocas horas", icon: "BRAND" },
+      { text: "Y sin gastar de más", icon: "💰" }
+    ]
+    : [
+      { text: "Everything is searched online today", icon: "🔍" },
+      { text: "Your business or brand must appear there", icon: "📍" },
+      { text: "RiWeb makes it possible in just a few hours", icon: "BRAND" },
+      { text: "Without overspending", icon: "💰" }
+    ];
 
   return (
     <div style={{
-      background: 'rgba(0,0,0,0.6)',
-      border: '1px solid rgba(202,138,4,0.25)',
-      borderRadius: '12px',
-      padding: '1.25rem 1.5rem',
-      fontFamily: '"Fira Code", "Cascadia Code", "Courier New", monospace',
-      fontSize: '0.82rem',
-      lineHeight: 1.7,
-      backdropFilter: 'blur(8px)',
-      minHeight: '200px',
-      overflow: 'hidden',
-      position: 'relative',
+      background: 'rgba(255, 255, 255, 0.03)',
+      border: '1px solid rgba(139, 92, 246, 0.3)', // Violet neon border
+      boxShadow: '0 0 40px rgba(139, 92, 246, 0.12)', // Neon glow
+      borderRadius: '24px',
+      padding: '2.5rem 1.5rem',
+      backdropFilter: 'blur(20px)',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'stretch',
+      gap: '1.5rem',
+      maxWidth: '1100px',
+      margin: '0 auto',
+      width: '100%'
     }}>
-      {/* Terminal header dots */}
-      <div style={{ display: 'flex', gap: '6px', marginBottom: '1rem' }}>
-        <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f87171' }} />
-        <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#fbbf24' }} />
-        <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#34d399' }} />
-        <span style={{ marginLeft: '0.75rem', color: 'rgba(255,255,255,0.3)', fontSize: '0.7rem', fontFamily: 'inherit' }}>modernization-engine.ts</span>
-      </div>
-      {visibleLines.map((line, i) => (
-        <div
-          key={line.id}
-          style={{
-            color: line.color,
-            opacity: i === visibleLines.length - 1 ? 1 : 0.5 + (i / visibleLines.length) * 0.5,
-            transition: 'opacity 0.4s ease',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          <span style={{ color: 'rgba(255,255,255,0.2)', marginRight: '0.75rem', userSelect: 'none' }}>
-            {String(i + 1).padStart(2, '0')}
-          </span>
-          {line.text}
-          {i === visibleLines.length - 1 && (
-            <span style={{ animation: 'blink 1s step-end infinite', color: '#ca8a04' }}>█</span>
-          )}
+      {steps.map((item, i) => (
+        <div key={i} style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          gap: '1rem'
+        }}>
+          {/* Icon Container */}
+          <div style={{
+            width: '48px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: item.icon === 'BRAND' ? 'rgba(255,255,255,0.05)' : 'rgba(139, 92, 246, 0.08)',
+            borderRadius: '14px',
+            border: '1px solid rgba(255,255,255,0.1)',
+            boxShadow: 'inset 0 0 10px rgba(139, 92, 246, 0.1)',
+            fontSize: '1.5rem'
+          }}>
+            {item.icon === 'BRAND' ? (
+              <img src="/logo-new.png" alt="" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+            ) : (
+              item.icon
+            )}
+          </div>
+
+          <span style={{
+            fontSize: '0.95rem',
+            color: 'rgba(255,255,255,0.9)',
+            fontWeight: 500,
+            lineHeight: 1.3,
+            maxWidth: '180px'
+          }}>{item.text}</span>
         </div>
       ))}
     </div>
@@ -91,62 +87,64 @@ export default function HomePage({ locale }: { locale: Locale }) {
 
   const businessWins = locale === "es"
     ? [
-      "Incremento drástico en la captura de clientes",
-      "Reducción de costos operativos mediante IA",
-      "Experiencia de carga instantánea (Core Web Vitals)",
-      "Seguridad blindada contra ciberataques modernos",
-      "Integración de agentes de IA y Chatbots inteligentes",
-      "Reconversión de código obsoleto a tecnología 2026"
+      { icon: '🚀', text: "Incremento drástico en la captura de clientes", color: 'violet' },
+      { icon: '🤖', text: "Reducción de costos operativos mediante IA", color: 'blue' },
+      { icon: '⚡', text: "Experiencia de carga instantánea (Core Web Vitals)", color: 'amber' },
+      { icon: '🛡️', text: "Seguridad blindada contra ciberataques modernos", color: 'green' },
+      { icon: '💬', text: "Integración de agentes de IA y Chatbots inteligentes", color: 'cyan' },
+      { icon: '💎', text: "Reconversión de código obsoleto a tecnología 2026", color: 'red' }
     ]
     : [
-      "Dramatic increase in customer acquisition",
-      "AI-driven operational cost reduction",
-      "Instant loading experience (Core Web Vitals)",
-      "Bulletproof security against modern cyber threats",
-      "Smart AI Agents and Intelligent Chatbots",
-      "Legacy code rebirth into 2026 technology"
+      { icon: '🚀', text: "Dramatic increase in customer acquisition", color: 'violet' },
+      { icon: '🤖', text: "AI-driven operational cost reduction", color: 'blue' },
+      { icon: '⚡', text: "Instant loading experience (Core Web Vitals)", color: 'amber' },
+      { icon: '🛡️', text: "Bulletproof security against modern cyber threats", color: 'green' },
+      { icon: '💬', text: "Smart AI Agents and Intelligent Chatbots", color: 'cyan' },
+      { icon: '💎', text: "Legacy code rebirth into 2026 technology", color: 'red' }
     ];
 
   const whyModernize = locale === "es"
     ? [
-      "Tu sitio actual es un gasto, no una inversión",
-      "El código viejo ahuyenta clientes y a Google",
-      "La IA ya no es opcional, es tu nueva ventaja",
-      "Tu competencia ya está modernizando su stack",
-      "Automatización total del flujo de ventas",
-      "Soporte 24/7 sin humanos con Agentes de IA"
+      { icon: '💸', text: "Tu sitio actual es un gasto, no una inversión", color: 'red' },
+      { icon: '📉', text: "El código viejo ahuyenta clientes y a Google", color: 'orange' },
+      { icon: '🧠', text: "La IA ya no es opcional, es tu nueva ventaja", color: 'cyan' },
+      { icon: '🏃', text: "Tu competencia ya está modernizando su stack", color: 'blue' },
+      { icon: '💰', text: "Automatización total del flujo de ventas", color: 'gold' },
+      { icon: '🤖', text: "Soporte 24/7 sin humanos con Agentes de IA", color: 'violet' }
     ]
     : [
-      "Your current site is an expense, not an investment",
-      "Old code scares away customers and Google",
-      "AI is no longer optional, it's your new edge",
-      "Your competitors are already modernizing their stack",
-      "Total sales flow automation",
-      "24/7 human-less support with AI Agents"
+      { icon: '💸', text: "Your current site is an expense, not an investment", color: 'red' },
+      { icon: '📉', text: "Old code scares away customers and Google", color: 'orange' },
+      { icon: '🧠', text: "AI is no longer optional, it's your new edge", color: 'cyan' },
+      { icon: '🏃', text: "Your competitors are already modernizing their stack", color: 'blue' },
+      { icon: '💰', text: "Total sales flow automation", color: 'gold' },
+      { icon: '🤖', text: "24/7 human-less support with AI Agents", color: 'violet' }
     ];
 
   return (
     <section className="landing-shell">
       <div className="bg-orb orb-1" />
       <div className="bg-orb orb-2" />
-      <div className="landing-brand">RIWEB PRO 2026</div>
-      <h1 className="landing-title">
+      <h1 className="landing-title" style={{ fontSize: '4.2rem', lineHeight: 1.1, marginBottom: '2rem' }}>
         {locale === "es"
-          ? "Hacé que tu negocio aparezca donde la gente busca hoy"
-          : "Make your business appear where people search today"}
+          ? "Haz que tu negocio o marca aparezca donde la gente busca hoy"
+          : "Make your business or brand appear where people search today"}
       </h1>
-      <p className="landing-subtitle">
-        {locale === "es"
-          ? "Analizamos tu visibilidad en el mapa, activamos tu contacto por WhatsApp y sumamos asistentes que atienden solos por vos."
-          : "We analyze your map visibility, activate your WhatsApp contact, and add assistants that attend to customers for you."}
+      <p className="landing-subtitle" style={{ fontSize: '1.25rem', marginBottom: '3rem', maxWidth: '900px', marginInline: 'auto', lineHeight: 1.5 }}>
+        {locale === "es" ? (
+          <>
+            Si ya tenés una web la mejoramos. Si no tenés, la creamos. Te ayudamos a que te encuentren en Google.
+            Y además activamos WhatsApp y asistentes de IA para que <span style={{ color: 'var(--primary)', fontWeight: 600 }}>respondan a tus clientes automáticamente</span>.
+          </>
+        ) : (
+          <>
+            If you already have a website, we improve it. If you don't, we create it. We help you be found on Google.
+            And we also activate WhatsApp and AI assistants to <span style={{ color: 'var(--primary)', fontWeight: 600 }}>answer your customers automatically</span>.
+          </>
+        )}
       </p>
 
-      {/* Code Simulation Block */}
-      <div style={{ maxWidth: '640px', margin: '0 auto 3rem', width: '100%' }}>
-        <CodeSimulation />
-      </div>
-
-      <form className="prompt-box" onSubmit={submit}>
+      <form className="prompt-box" onSubmit={submit} style={{ marginBottom: '4rem' }}>
         <input
           id="url-input"
           required
@@ -160,18 +158,26 @@ export default function HomePage({ locale }: { locale: Locale }) {
         </button>
       </form>
 
-      <div style={{ marginTop: '6rem' }}>
+      {/* Feature List Block */}
+      <div style={{ maxWidth: '1100px', margin: '0 auto 5rem', width: '100%' }}>
+        <FeatureList locale={locale} />
+      </div>
+
+      <div style={{ marginTop: '2rem' }}>
         <section className="card landing-section">
           <h2>{locale === "es" ? "ADN de Modernización" : "Modernization DNA"}</h2>
-          <ul className="service-list">
+          <div className="dna-grid">
             {businessWins.map((item) => (
-              <li key={item}>{item}</li>
+              <div key={item.text} className={`dna-card ${item.color}`}>
+                <div className="dna-icon">{item.icon}</div>
+                <div className="dna-text">{item.text}</div>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
 
         <section className="card landing-section">
-          <h2>{locale === "es" ? "De Web Obsoleta a IA Nativa" : "From Legacy to AI Native"}</h2>
+          <h2>{locale === "es" ? "De Web Antigua a Web con IA" : "From Legacy Web to AI Powered"}</h2>
           <ol className="step-list">
             <li>
               <div>
@@ -181,7 +187,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
             </li>
             <li>
               <div>
-                <strong>{locale === "es" ? "ReBirth Digital" : "Digital ReBirth"}</strong>
+                <strong>{locale === "es" ? "Transformación Digital" : "Digital Transformation"}</strong>
                 <p className="muted" style={{ margin: '0.25rem 0 0' }}>{locale === "es" ? "Plan de reconversión de código viejo a arquitecturas de alto rendimiento." : "Reconversion plan from legacy code to high-performance architectures."}</p>
               </div>
             </li>
@@ -196,11 +202,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
 
         <section className="card landing-section">
           <h2>{locale === "es" ? "¿Por qué modernizar hoy?" : "Why modernize today?"}</h2>
-          <ul className="service-list check-list">
+          <div className="why-grid">
             {whyModernize.map((item) => (
-              <li key={item}>{item}</li>
+              <div key={item.text} className={`why-card ${item.color}`}>
+                <div className="why-icon">{item.icon}</div>
+                <div className="why-text">{item.text}</div>
+              </div>
             ))}
-          </ul>
+          </div>
         </section>
 
         <section className="final-cta" style={{ position: 'relative', overflow: 'hidden' }}>
@@ -212,10 +221,23 @@ export default function HomePage({ locale }: { locale: Locale }) {
                 : "Get a free strategic plan and discover your web's potential with AI."}
             </p>
             <div className="final-cta-actions">
-              <button type="button" className="btn-white">
+              <a
+                href={locale === "es"
+                  ? "https://wa.me/5491165689145?text=Hola%20RiWeb%2C%20vengo%20desde%20la%20web%20y%20me%20gustar%C2%ADa%20agendar%20una%20sesi%C3%B3n%20de%20IA%20para%20mi%20negocio."
+                  : "https://wa.me/5491165689145?text=Hello%20RiWeb%2C%20I'm%20coming%20from%20the%20website%20and%20would%20like%20to%20schedule%20an%20AI%20session%20for%20my%20business."
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-white"
+                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+              >
                 {locale === "es" ? "📞 Agendar Sesión IA" : "📞 Schedule AI Session"}
-              </button>
-              <button type="button" className="btn-outline-white">
+              </a>
+              <button
+                type="button"
+                className="btn-outline-white"
+                onClick={() => document.getElementById('url-input')?.focus()}
+              >
                 {locale === "es" ? "📄 Ver Reporte Estratégico" : "📄 View Strategic Report"}
               </button>
             </div>

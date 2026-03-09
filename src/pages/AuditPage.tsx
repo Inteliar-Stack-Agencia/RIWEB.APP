@@ -18,32 +18,85 @@ function scoreLabel(v: number, locale: Locale) {
   return locale === 'es' ? 'Crítico' : 'Critical';
 }
 
+// ─── Metric explanation helper ────────────────────────────────────
+function getMetricHelp(key: string, locale: Locale) {
+  const isSpanish = locale === 'es';
+  const helps: Record<string, string> = isSpanish ? {
+    speed: "Es qué tan rápido abre tu página. Si es lento, los clientes se cansan de esperar y se van.",
+    performance: "Es la salud general técnica de tu web. Como un chequeo médico de tu programación.",
+    seoBasics: "Es qué tan fácil te encuentran en Google. Si está bien, aparecés más arriba en las búsquedas.",
+    mobile: "Es cómo se ve tu web en el celular. Hoy la mayoría de la gente compra desde el teléfono.",
+    conversion: "Es la capacidad de tu web para convertir visitas en ventas reales.",
+    aiReadiness: "Es qué tan preparada está tu web para que un robot inteligente ayude a tus clientes.",
+    security: "Es la protección de tu web. Como ponerle una buena cerradura y alarma a tu negocio.",
+    accessibility: "Es que personas con dificultades visuales o motrices también puedan usar tu web.",
+  } : {
+    speed: "How fast your page opens. If it's slow, customers get tired of waiting and leave.",
+    performance: "The overall technical health of your site. Like a medical checkup for your code.",
+    seoBasics: "How easy it is to find you on Google. If it's good, you appear higher in searches.",
+    mobile: "How your web looks on a phone. Today most people shop from their mobile.",
+    conversion: "The ability of your site to turn visits into real sales.",
+    aiReadiness: "How ready your site is for an intelligent robot to help your customers.",
+    security: "Your web protection. Like putting a good lock and alarm on your business.",
+    accessibility: "Ensuring people with visual or motor difficulties can also use your site.",
+  };
+  return helps[key] || "";
+}
+
 // ─── Single metric card ──────────────────────────────────────────
-function MetricCard({ icon, label, value, locale }: {
-  icon: string; label: string; value: number; locale: Locale;
+function MetricCard({ icon, label, value, locale, metricKey }: {
+  icon: string; label: string; value: number; locale: Locale; metricKey: string;
 }) {
+  const [showHelp, setShowHelp] = useState(false);
   const color = scoreColor(value);
+  const help = getMetricHelp(metricKey, locale);
+
   return (
-    <div style={{
-      background: 'rgba(255,255,255,0.03)',
-      border: `1px solid ${color}33`,
-      borderRadius: 16,
-      padding: '1.25rem 1rem',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.6rem',
-    }}>
+    <div
+      onClick={() => setShowHelp(!showHelp)}
+      style={{
+        background: 'rgba(255,255,255,0.03)',
+        border: `1px solid ${color}33`,
+        borderRadius: 16,
+        padding: '1.25rem 1rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.6rem',
+        cursor: 'pointer',
+        position: 'relative',
+        transition: 'all 0.3s ease'
+      }}
+      className="metric-card-hover"
+    >
+      {showHelp && (
+        <div style={{
+          position: 'absolute', inset: 0, background: 'var(--color-primary)',
+          borderRadius: 16, padding: '1rem', zIndex: 10, display: 'flex',
+          flexDirection: 'column', justifyContent: 'center', textAlign: 'center',
+          fontSize: '0.8rem', lineHeight: 1.4, border: `1px solid ${color}`
+        }}>
+          <div>{help}</div>
+          <div style={{ marginTop: '0.5rem', fontSize: '0.6rem', color: 'var(--color-cta)', fontWeight: 800 }}>
+            {locale === 'es' ? "TOCÁ PARA VOLVER" : "TAP TO RETURN"}
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontSize: '1.3rem' }}>{icon}</span>
-        <span style={{
-          fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.06em',
-          color, background: `${color}1a`, borderRadius: 99, padding: '0.2rem 0.6rem'
-        }}>
-          {scoreLabel(value, locale)}
-        </span>
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          <span style={{ fontSize: '0.6rem', opacity: 0.5 }}>❓</span>
+          <span style={{
+            fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.06em',
+            color, background: `${color}1a`, borderRadius: 99, padding: '0.2rem 0.6rem'
+          }}>
+            {scoreLabel(value, locale)}
+          </span>
+        </div>
       </div>
       <div style={{ fontSize: '2rem', fontWeight: 800, color, lineHeight: 1 }}>{value}</div>
       <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{label}</div>
+
       {/* Progress bar */}
       <div style={{ height: 4, background: 'rgba(255,255,255,0.08)', borderRadius: 99, overflow: 'hidden' }}>
         <div style={{
@@ -62,24 +115,24 @@ function MetricsGrid({ metrics, locale }: {
 }) {
   const items = locale === 'es'
     ? [
-      { icon: '⚡', label: 'Velocidad de Carga', key: 'speed' },
-      { icon: '🏆', label: 'Performance General', key: 'performance' },
-      { icon: '🔍', label: 'SEO Técnico', key: 'seoBasics' },
-      { icon: '📱', label: 'Experiencia Móvil', key: 'mobile' },
-      { icon: '💰', label: 'Conversión', key: 'conversion' },
+      { icon: '⚡', label: 'Velocidad', key: 'speed' },
+      { icon: '🏆', label: 'Salud Técnica', key: 'performance' },
+      { icon: '🔍', label: 'SEO Google', key: 'seoBasics' },
+      { icon: '📱', label: 'Vista Celular', key: 'mobile' },
+      { icon: '💰', label: 'Ventas', key: 'conversion' },
       { icon: '🤖', label: 'Preparación IA', key: 'aiReadiness' },
       { icon: '🔒', label: 'Seguridad', key: 'security' },
-      { icon: '♿', label: 'Accesibilidad', key: 'accessibility' },
+      { icon: '♿', label: 'Fácil de Usar', key: 'accessibility' },
     ]
     : [
       { icon: '⚡', label: 'Page Speed', key: 'speed' },
-      { icon: '🏆', label: 'Performance', key: 'performance' },
-      { icon: '🔍', label: 'Technical SEO', key: 'seoBasics' },
-      { icon: '📱', label: 'Mobile UX', key: 'mobile' },
-      { icon: '💰', label: 'Conversion', key: 'conversion' },
-      { icon: '🤖', label: 'AI Readiness', key: 'aiReadiness' },
+      { icon: '🏆', label: 'Technical Health', key: 'performance' },
+      { icon: '🔍', label: 'Google Search', key: 'seoBasics' },
+      { icon: '📱', label: 'Mobile View', key: 'mobile' },
+      { icon: '💰', label: 'Sales Power', key: 'conversion' },
+      { icon: '🤖', label: 'AI Ready', key: 'aiReadiness' },
       { icon: '🔒', label: 'Security', key: 'security' },
-      { icon: '♿', label: 'Accessibility', key: 'accessibility' },
+      { icon: '♿', label: 'User Friendly', key: 'accessibility' },
     ];
 
   return (
@@ -93,10 +146,31 @@ function MetricsGrid({ metrics, locale }: {
           key={item.key}
           icon={item.icon}
           label={item.label}
+          metricKey={item.key}
           value={(metrics as Record<string, number>)[item.key] ?? 0}
           locale={locale}
         />
       ))}
+      <div style={{
+        background: 'rgba(202, 138, 4, 0.05)',
+        border: '1px dashed var(--color-cta)',
+        borderRadius: 16,
+        padding: '1.25rem 1rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        gap: '0.4rem',
+        opacity: 0.8
+      }}>
+        <div style={{ fontSize: '1.2rem' }}>💡</div>
+        <div style={{ fontSize: '0.7rem', fontWeight: 600, color: 'var(--color-cta)', lineHeight: 1.3 }}>
+          {locale === 'es'
+            ? "Toca cada puntaje para entender qué significa y cómo mejorarlo."
+            : "Tap each score to understand what it means and how to improve it."}
+        </div>
+      </div>
     </div>
   );
 }
@@ -184,7 +258,33 @@ export default function AuditPage({ locale }: { locale: Locale }) {
 
         const result = await runAudit(url);
         if (cancelled) return;
-        setAnalysis(result);
+
+        // Automatically generate AI report
+        addLog(locale === "es" ? "GENERANDO INFORME ESTRATÉGICO CON IA..." : "GENERATING AI STRATEGIC REPORT...");
+        const { callGenerateReport } = await import("../lib/supabase");
+        const aiReport = await callGenerateReport(result, locale);
+
+        if (cancelled) return;
+
+        // Merge report into analysis result
+        const finalResult = { ...result, report: aiReport };
+        setAnalysis(finalResult);
+        addLog("DEEP_ANALYSIS: COMPLETE");
+
+        // Perspective persist to DB (silent lead tracking without email if needed, or just skip email)
+        await createLeadAuditReport({
+          email: "frictionless-user@riweb.app",
+          url,
+          locale,
+          metrics: result.metrics,
+          scoreTotal: result.scoreTotal,
+          tech: result.tech,
+          summary: aiReport.summary,
+          opportunities: aiReport.opportunities,
+          risks: aiReport.risks,
+          roadmap: aiReport.roadmap
+        });
+
       } catch (err) {
         console.error("Audit function failed", err);
         if (cancelled) return;
@@ -213,55 +313,6 @@ export default function AuditPage({ locale }: { locale: Locale }) {
       cancelled = true;
     };
   }, [locale, url]);
-
-  // Removed reportDraft useMemo; report generation now happens server-side after lead capture.
-
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!analysis) {
-      setSubmitError(locale === "es" ? "Esperá a que termine el análisis." : "Wait until the analysis is complete.");
-      return;
-    }
-
-    setSubmitError(null);
-    setSubmitLoading(true);
-
-    try {
-      // Step 1: Generate AI report server-side
-      setSubmitError(locale === "es" ? "Generando recomendaciones con IA..." : "Generating AI recommendations...");
-      const { callGenerateReport } = await import("../lib/supabase");
-      const aiReport = await callGenerateReport(analysis, locale);
-
-      // Step 2: Persist lead + audit + report
-      const created = await createLeadAuditReport({
-        email,
-        url,
-        locale,
-        metrics: analysis.metrics,
-        scoreTotal: analysis.scoreTotal,
-        tech: analysis.tech,
-        summary: aiReport.summary,
-        opportunities: aiReport.opportunities,
-        risks: aiReport.risks,
-        roadmap: aiReport.roadmap
-      });
-
-      const prefix = locale === "es" ? "/es" : "";
-      navigate(`${prefix}/report/${created.reportId}`, {
-        state: {
-          report: created.report,
-          audit: created.audit
-        }
-      });
-    } catch (err) {
-      console.error("Failed to create report flow", err);
-      setSubmitError(locale === "es"
-        ? "No pudimos generar el informe estratégico. Revisá tu conexión e intentá nuevamente."
-        : "We couldn't generate the strategic report. Please check your connection and try again.");
-    } finally {
-      setSubmitLoading(false);
-    }
-  };
 
   return (
     <div id="app">
@@ -323,54 +374,91 @@ export default function AuditPage({ locale }: { locale: Locale }) {
         )}
       </div>
 
-      <div className="card" style={{ border: '1px solid var(--color-cta)', background: 'linear-gradient(135deg, var(--glass-bg), rgba(202, 138, 4, 0.03))' }}>
-        <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-          <h3 style={{ margin: 0 }}>{locale === "es" ? "Desbloquear Informe Estratégico" : "Unlock Strategic Report"}</h3>
-          <p className="muted">Ingresá tu email para recibir el análisis detallado y el roadmap de modernización.</p>
-        </div>
-
-        <form onSubmit={submit} style={{ maxWidth: '500px', margin: '0 auto' }}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-secondary)', marginBottom: '0.25rem' }}>EMAIL CORPORATIVO</label>
-            <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="tu@empresa.com" style={{ fontSize: '1.1rem' }} />
-          </div>
-
-          <button
-            disabled={submitLoading || analysisLoading || !analysis}
-            className="cta-pill"
-            style={{
-              padding: '1rem',
-              fontSize: '1.1rem',
-              boxShadow: 'var(--shadow-lg)'
-            }}
-          >
-            {submitLoading ? "Generando Roadmap..." : (locale === "es" ? "✦ Obtener Roadmap de Modernización" : "✦ Get Modernization Roadmap")}
-          </button>
-        </form>
-        {submitError ? <p className="error-text" style={{ textAlign: 'center' }}>{submitError}</p> : null}
-      </div>
-
       {analysis && (
-        <div className="grid">
-          <div className="card">
-            <h4 style={{ color: 'var(--color-cta)' }}>{locale === "es" ? "Hallazgos Críticos" : "Critical Findings"}</h4>
-            <ul className="list" style={{ marginTop: '1rem' }}>
-              {analysis.issues.slice(0, 3).map((item) => (
-                <li key={item.title} style={{ marginBottom: '0.5rem' }}>
-                  <strong>{item.title}</strong>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="card">
-            <h4 style={{ color: '#10b981' }}>{locale === "es" ? "Quick Wins" : "Quick Wins"}</h4>
-            <ul className="list" style={{ marginTop: '1rem' }}>
-              {analysis.quickWins.slice(0, 3).map((item) => (
-                <li key={item.title} style={{ marginBottom: '0.5rem' }}>
-                  <strong>{item.title}</strong>
-                </li>
-              ))}
-            </ul>
+        <div id="roadmap-result" className="grid" style={{ marginTop: '3rem' }}>
+          <div className="card" style={{ border: '1px solid var(--color-cta)' }}>
+            <h4 style={{ color: 'var(--color-cta)', fontSize: '1.5rem', marginBottom: '1.5rem' }}>
+              {locale === "es" ? "📋 Tu Roadmap Estratégico" : "📋 Your Strategic Roadmap"}
+            </h4>
+
+            {analysis.report ? (
+              <div style={{ lineHeight: 1.6 }}>
+                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
+                  <p style={{ fontWeight: 600, color: 'var(--color-cta)' }}>{locale === "es" ? "Resumen General" : "Executive Summary"}</p>
+                  <p className="muted">{analysis.report.summary}</p>
+                </div>
+
+                <div className="grid" style={{ gap: '1.5rem' }}>
+                  <div>
+                    <h5 style={{ color: '#34d399', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      🚀 {locale === "es" ? "Oportunidades" : "Opportunities"}
+                    </h5>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      {analysis.report.opportunities.map((o: string, i: number) => {
+                        const clean = o.replace(/^(Oportunidad|Opportunity)\s*\d+:\s*/i, "");
+                        return (
+                          <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                            <div style={{
+                              minWidth: '24px', height: '24px', borderRadius: '50%', background: 'rgba(52, 211, 153, 0.1)',
+                              border: '1px solid #34d399', color: '#34d399', display: 'flex', alignItems: 'center',
+                              justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800
+                            }}>
+                              {i + 1}
+                            </div>
+                            <div className="muted" style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>{clean}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div>
+                    <h5 style={{ color: '#f87171', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      ⚠️ {locale === "es" ? "Riesgos" : "Risks"}
+                    </h5>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      {analysis.report.risks.map((r: string, i: number) => {
+                        const clean = r.replace(/^(Riesgo|Risk)\s*\d+:\s*/i, "");
+                        return (
+                          <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                            <div style={{
+                              minWidth: '24px', height: '24px', borderRadius: '50%', background: 'rgba(248, 113, 113, 0.1)',
+                              border: '1px solid #f87171', color: '#f87171', display: 'flex', alignItems: 'center',
+                              justifyContent: 'center', fontSize: '0.7rem', fontWeight: 800
+                            }}>
+                              {i + 1}
+                            </div>
+                            <div className="muted" style={{ fontSize: '0.9rem', lineHeight: 1.5 }}>{clean}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="grid">
+                <div className="card" style={{ padding: 0, background: 'transparent' }}>
+                  <h4 style={{ color: 'var(--color-cta)' }}>{locale === "es" ? "Hallazgos Críticos" : "Critical Findings"}</h4>
+                  <ul className="list" style={{ marginTop: '1rem' }}>
+                    {analysis.issues.slice(0, 3).map((item) => (
+                      <li key={item.title} style={{ marginBottom: '0.5rem' }}>
+                        <strong>{item.title}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="card" style={{ padding: 0, background: 'transparent' }}>
+                  <h4 style={{ color: '#10b981' }}>{locale === "es" ? "Quick Wins" : "Quick Wins"}</h4>
+                  <ul className="list" style={{ marginTop: '1rem' }}>
+                    {analysis.quickWins.slice(0, 3).map((item) => (
+                      <li key={item.title} style={{ marginBottom: '0.5rem' }}>
+                        <strong>{item.title}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
