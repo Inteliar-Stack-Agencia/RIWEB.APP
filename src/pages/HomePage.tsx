@@ -211,14 +211,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <h1 className="landing-title">
         {locale === "es"
-          ? "Tu negocio vendiendo y respondiendo solo mientras dormís"
+          ? "Tu negocio vendiendo y respondiendo solo mientras duermes"
           : "Your business selling and responding automatically while you sleep"}
       </h1>
 
-      <p className="landing-subtitle">
+      <p className="landing-subtitle" style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.82)", maxWidth: "580px", margin: "0 auto 2rem" }}>
         {locale === "es"
-          ? "Creamos tu web + bot con IA que atiende WhatsApp, responde consultas y cierra ventas 24/7. Y si lo necesitás, también te armamos un sistema para gestionar todo desde un solo lugar."
-          : "We create your web + AI bot that handles WhatsApp, answers queries and closes sales 24/7. And if you need it, we also build a system to manage everything from one place."}
+          ? "Creamos tu web + bot con IA que atiende WhatsApp y cierra ventas 24/7. Si lo necesitás, también armamos tu sistema de gestión."
+          : "We build your web + AI bot that handles WhatsApp and closes sales 24/7. Need more? We also build your management system."}
       </p>
 
       {/* Hero CTAs */}
@@ -258,7 +258,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
             ? "Escribí qué vendés y mirá cómo trabajaría tu bot"
             : "Type what you sell and see how your bot would work"}
         </p>
-        <DemoChatPro />
+        <DemoChatPro locale={locale} />
       </div>
 
       {/* Code simulation */}

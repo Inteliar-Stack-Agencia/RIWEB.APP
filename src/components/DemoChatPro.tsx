@@ -1,109 +1,141 @@
 import { useMemo, useState } from "react";
+import type { Locale } from "../types";
 
 type Msg = { from: "bot" | "user"; text: string };
 
-const EXAMPLES = [
-  { label: "Restaurante", value: "restaurante" },
-  { label: "Tienda de ropa", value: "ropa" },
-  { label: "Servicio técnico", value: "reparación" },
-];
-
 const WA_NUMBER = "5491165689145";
 
-function detectLang(input: string): "es" | "en" {
-  const esHints = ["rest", "ropa", "repar", "comida", "tienda", "gym", "belle", "restaurante", "reparación", "pizza", "zapat"];
-  return esHints.some((k) => input.toLowerCase().includes(k)) ? "es" : "en";
+const EXAMPLES_ES = [
+  { label: "Restaurante", value: "Restaurante" },
+  { label: "Tienda de ropa", value: "Tienda de ropa" },
+  { label: "Servicio técnico", value: "Servicio técnico" },
+];
+const EXAMPLES_EN = [
+  { label: "Restaurant", value: "Restaurant" },
+  { label: "Clothing store", value: "Clothing store" },
+  { label: "Tech repair", value: "Tech repair" },
+];
+
+function detectCategory(input: string) {
+  const t = input.toLowerCase();
+  if (/rest|pizza|comida|food|cafe|sushi|burger|menu|restaur/.test(t)) return "restaurant";
+  if (/ropa|cloth|fashion|moda|shirt|dress|boutique|indument|zapat/.test(t)) return "clothing";
+  if (/repar|service|fix|técn|tech|celular|laptop|pantalla|screen/.test(t)) return "repair";
+  return "generic";
 }
 
-function getScript(input: string, lang: "es" | "en"): string[] {
-  const t = input.toLowerCase();
-  const is = {
-    restaurant: ["rest", "pizza", "comida", "food", "restaurante", "cafe", "sushi", "burger"].some((k) => t.includes(k)),
-    clothing: ["ropa", "clothing", "indumentaria", "tienda", "moda", "zapat", "boutique"].some((k) => t.includes(k)),
-    repair: ["repar", "service", "fix", "técn", "tech", "reparación", "celular", "laptop"].some((k) => t.includes(k)),
-  };
+// Full back-and-forth conversations: alternating bot / simulated-customer
+function getConversation(input: string, lang: "es" | "en"): Msg[] {
+  const cat = detectCategory(input);
 
   if (lang === "es") {
-    if (is.restaurant) return [
-      "Hola 👋 ¿Buscás el menú del día o algo en particular?",
-      "Tenemos opciones listas para hoy 🚀",
-      "¿Te mando el menú o querés que te recomiende algo?",
+    if (cat === "restaurant") return [
+      { from: "bot",  text: "Hola 👋 ¿Buscás el menú del día o querés reservar una mesa?" },
+      { from: "user", text: "Quiero ver el menú" },
+      { from: "bot",  text: "Hoy tenemos pizza, milanesa y ensalada 🍕 Todo desde $1.200. ¿Te anoto algo?" },
+      { from: "user", text: "Sí, una pizza para llevar" },
+      { from: "bot",  text: "¡Listo! ¿Cuándo pasás a buscarla? Puedo reservarla ahora mismo 🚀" },
     ];
-    if (is.clothing) return [
-      "Hola 👋 ¿Buscás algo casual, deportivo o formal?",
-      "Tenemos promos activas hoy 🔥",
-      "¿Qué talle estás buscando?",
+    if (cat === "clothing") return [
+      { from: "bot",  text: "Hola 👋 ¿Buscás algo casual, deportivo o formal?" },
+      { from: "user", text: "Casual, ¿tenés remeras?" },
+      { from: "bot",  text: "Sí! Remeras desde $4.500, varios colores 🔥 ¿Qué talle usás?" },
+      { from: "user", text: "Talle M, ¿cuánto tarda el envío?" },
+      { from: "bot",  text: "Envío en 24hs. Comprás hoy, llegás mañana 📦 ¿Te mando el link de pago?" },
     ];
-    if (is.repair) return [
-      "Hola 👋 ¿Qué equipo necesitás reparar?",
-      "Te podemos dar un presupuesto al instante 📲",
-      "¿Es celular, PC u otro dispositivo?",
+    if (cat === "repair") return [
+      { from: "bot",  text: "Hola 👋 ¿Qué equipo necesitás reparar?" },
+      { from: "user", text: "El celular, se me rajó la pantalla" },
+      { from: "bot",  text: "¿Qué modelo es? Así te doy el precio exacto al toque 📲" },
+      { from: "user", text: "iPhone 13" },
+      { from: "bot",  text: "iPhone 13: cambio de pantalla $25.000, listo en 2hs. ¿Tenés turno libre hoy?" },
     ];
     return [
-      "Hola 👋 ¿En qué te puedo ayudar?",
-      "Puedo responder consultas y ayudarte a comprar 🚀",
-      "Contame qué estás buscando",
+      { from: "bot",  text: "Hola 👋 ¿En qué te puedo ayudar?" },
+      { from: "user", text: "Quiero saber más sobre sus servicios" },
+      { from: "bot",  text: "Con gusto 😊 ¿Buscás algo específico o querés que te cuente las opciones?" },
+      { from: "user", text: "¿Cuánto cuesta?" },
+      { from: "bot",  text: "Depende de lo que necesitás. Contame un poco más y te doy precio exacto en segundos ⚡" },
     ];
   } else {
-    if (is.restaurant) return [
-      "Hi 👋 Looking for today's menu or something specific?",
-      "We have ready-to-order options 🚀",
-      "Want me to suggest something?",
+    if (cat === "restaurant") return [
+      { from: "bot",  text: "Hi 👋 Looking for today's menu or want to book a table?" },
+      { from: "user", text: "I'd like to see the menu" },
+      { from: "bot",  text: "Today we have pizza, chicken & salads 🍕 From $12. Want to order something?" },
+      { from: "user", text: "Yes, a pizza to go" },
+      { from: "bot",  text: "Done! When can you pick it up? I can reserve it right now 🚀" },
     ];
-    if (is.clothing) return [
-      "Hi 👋 Casual, sport or formal?",
-      "We have active promos today 🔥",
-      "What size are you looking for?",
+    if (cat === "clothing") return [
+      { from: "bot",  text: "Hi 👋 Looking for casual, sport or formal?" },
+      { from: "user", text: "Casual — do you have t-shirts?" },
+      { from: "bot",  text: "Yes! T-shirts from $15, multiple colors 🔥 What size are you?" },
+      { from: "user", text: "Size M — how long does shipping take?" },
+      { from: "bot",  text: "Ships in 24hs. Order today, get it tomorrow 📦 Want me to send the checkout link?" },
     ];
-    if (is.repair) return [
-      "Hi 👋 What device do you need fixed?",
-      "We can give you an instant quote 📲",
-      "Is it a phone, PC or something else?",
+    if (cat === "repair") return [
+      { from: "bot",  text: "Hi 👋 What device do you need fixed?" },
+      { from: "user", text: "My phone screen cracked" },
+      { from: "bot",  text: "Which model? I'll give you the exact price right away 📲" },
+      { from: "user", text: "iPhone 13" },
+      { from: "bot",  text: "iPhone 13 screen repair: $89, ready in 2hs. Do you have time today?" },
     ];
     return [
-      "Hi 👋 How can I help you?",
-      "I can answer questions and help you buy 🚀",
-      "Tell me what you're looking for",
+      { from: "bot",  text: "Hi 👋 How can I help you?" },
+      { from: "user", text: "I'd like to know about your services" },
+      { from: "bot",  text: "Happy to help 😊 Looking for something specific or want me to walk you through?" },
+      { from: "user", text: "How much does it cost?" },
+      { from: "bot",  text: "Depends on what you need. Tell me more and I'll give you an exact price in seconds ⚡" },
     ];
   }
 }
 
-export default function DemoChatPro() {
+export default function DemoChatPro({ locale }: { locale: Locale }) {
+  const lang = locale; // page language drives bot language
   const [input, setInput] = useState("");
   const [running, setRunning] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [typing, setTyping] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>([]);
-  const [lang, setLang] = useState<"es" | "en">("es");
 
-  const canRun = input.trim().length > 2 && !running && !loading;
+  const examples = lang === "es" ? EXAMPLES_ES : EXAMPLES_EN;
+  const canRun = input.trim().length > 0 && !running && !loading;
+
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
   const run = async (value?: string) => {
     const text = (value ?? input).trim();
     if (!text || running || loading) return;
 
-    const l = detectLang(text);
-    setLang(l);
     setRunning(true);
     setLoading(true);
     setMsgs([{ from: "user", text }]);
 
-    await new Promise((r) => setTimeout(r, 850));
+    await sleep(850);
     setLoading(false);
 
-    const script = getScript(text, l);
+    const conversation = getConversation(text, lang);
 
-    for (let i = 0; i < script.length; i++) {
-      await new Promise((r) => setTimeout(r, 850));
-      setMsgs((prev) => [...prev, { from: "bot", text: script[i] }]);
+    for (const msg of conversation) {
+      if (msg.from === "bot") {
+        setTyping(true);
+        await sleep(900);
+        setTyping(false);
+      } else {
+        await sleep(450);
+      }
+      setMsgs((prev) => [...prev, msg]);
     }
 
-    await new Promise((r) => setTimeout(r, 850));
+    // Final CTA message from bot
+    setTyping(true);
+    await sleep(900);
+    setTyping(false);
     setMsgs((prev) => [
       ...prev,
       {
         from: "bot",
         text:
-          l === "es"
+          lang === "es"
             ? "👉 Esto puede responder así 24/7 en tu negocio. ¿Querés que lo armemos para vos?"
             : "👉 This can reply like this 24/7 for your business. Want me to set it up?",
       },
@@ -115,6 +147,7 @@ export default function DemoChatPro() {
   const reset = () => {
     setRunning(false);
     setLoading(false);
+    setTyping(false);
     setMsgs([]);
     setInput("");
   };
@@ -145,7 +178,7 @@ export default function DemoChatPro() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && canRun && run()}
-            placeholder={lang === "es" ? "¿Qué vendés? / What do you sell?" : "What do you sell? / ¿Qué vendés?"}
+            placeholder={lang === "es" ? "¿Qué vendés? Ej: ropa, restaurant..." : "What do you sell? E.g. pizza, clothes..."}
             style={{ flex: 1, minWidth: 0 }}
             disabled={running || loading}
           />
@@ -159,13 +192,15 @@ export default function DemoChatPro() {
               whiteSpace: "nowrap",
             }}
           >
-            Probar
+            {lang === "es" ? "Probar" : "Try"}
           </button>
         </div>
 
         <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.75rem", alignItems: "center" }}>
-          <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>Probar con:</span>
-          {EXAMPLES.map((ex) => (
+          <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>
+            {lang === "es" ? "Probar con:" : "Try with:"}
+          </span>
+          {examples.map((ex) => (
             <button
               key={ex.value}
               onClick={() => {
@@ -230,7 +265,9 @@ export default function DemoChatPro() {
           </div>
           <div>
             <div style={{ fontWeight: 600, fontSize: "0.88rem" }}>AI Sales Bot</div>
-            <div style={{ fontSize: "0.7rem", color: "#34d399" }}>● Activo — Respondiendo al instante</div>
+            <div style={{ fontSize: "0.7rem", color: "#34d399" }}>
+              {lang === "es" ? "● Activo — Respondiendo al instante" : "● Active — Replying instantly"}
+            </div>
           </div>
           {msgs.length > 0 && !running && (
             <button
@@ -245,35 +282,24 @@ export default function DemoChatPro() {
                 textDecoration: "underline",
               }}
             >
-              Reiniciar
+              {lang === "es" ? "Reiniciar" : "Reset"}
             </button>
           )}
         </div>
 
         {/* Empty state */}
         {msgs.length === 0 && !loading && (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "1.5rem 0",
-              color: "var(--text-muted)",
-              fontSize: "0.85rem",
-            }}
-          >
-            Escribí qué vendés y apretá <strong style={{ color: "var(--primary)" }}>Probar</strong> 👆
+          <div style={{ textAlign: "center", padding: "1.5rem 0", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+            {lang === "es"
+              ? <>Escribí qué vendés y apretá <strong style={{ color: "var(--primary)" }}>Probar</strong> 👆</>
+              : <>Type what you sell and hit <strong style={{ color: "var(--primary)" }}>Try</strong> 👆</>}
           </div>
         )}
 
         {/* Loading indicator */}
         {loading && (
-          <div
-            style={{
-              fontSize: "0.82rem",
-              color: "rgba(202,138,4,0.8)",
-              animation: "pulse 1.5s ease-in-out infinite",
-            }}
-          >
-            ⚡ Generando tu asistente IA...
+          <div style={{ fontSize: "0.82rem", color: "rgba(202,138,4,0.8)", animation: "pulse 1.5s ease-in-out infinite" }}>
+            {lang === "es" ? "⚡ Generando tu asistente IA..." : "⚡ Generating your AI assistant..."}
           </div>
         )}
 
@@ -292,8 +318,7 @@ export default function DemoChatPro() {
                 style={{
                   maxWidth: "82%",
                   padding: "0.6rem 0.9rem",
-                  borderRadius:
-                    m.from === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
+                  borderRadius: m.from === "user" ? "14px 14px 4px 14px" : "14px 14px 14px 4px",
                   background:
                     m.from === "user"
                       ? "linear-gradient(135deg,#ca8a04,#d97706)"
@@ -309,8 +334,8 @@ export default function DemoChatPro() {
             </div>
           ))}
 
-          {/* Typing indicator */}
-          {running && !loading && (
+          {/* Typing indicator — only for bot messages */}
+          {typing && (
             <div style={{ display: "flex", justifyContent: "flex-start" }}>
               <div
                 style={{
@@ -322,7 +347,7 @@ export default function DemoChatPro() {
                   animation: "pulse 1.2s ease-in-out infinite",
                 }}
               >
-                escribiendo...
+                {lang === "es" ? "escribiendo..." : "typing..."}
               </div>
             </div>
           )}
