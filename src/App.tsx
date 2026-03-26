@@ -1,26 +1,58 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import AdminPage from "./pages/AdminPage";
 import AuditPage from "./pages/AuditPage";
 import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
 import ReportPage from "./pages/ReportPage";
+import DashboardLayout from "./pages/dashboard/DashboardLayout";
+import ClientsPage from "./pages/dashboard/ClientsPage";
+import BotPage from "./pages/dashboard/BotPage";
+import LeadsPage from "./pages/dashboard/LeadsPage";
+
+// Wraps public routes with the existing top-nav Layout
+function PublicWrapper() {
+  return <Layout><Outlet /></Layout>;
+}
 
 export default function App() {
   return (
-    <Layout>
+    <AuthProvider>
       <Routes>
-        <Route path="/" element={<HomePage locale="en" />} />
-        <Route path="/es" element={<HomePage locale="es" />} />
 
-        <Route path="/audit" element={<AuditPage locale="en" />} />
-        <Route path="/es/audit" element={<AuditPage locale="es" />} />
+        {/* ── Public routes (with top nav Layout) ──────────────────── */}
+        <Route element={<PublicWrapper />}>
+          <Route path="/"              element={<HomePage locale="en" />} />
+          <Route path="/es"            element={<HomePage locale="es" />} />
+          <Route path="/audit"         element={<AuditPage locale="en" />} />
+          <Route path="/es/audit"      element={<AuditPage locale="es" />} />
+          <Route path="/report/:id"    element={<ReportPage locale="en" />} />
+          <Route path="/es/report/:id" element={<ReportPage locale="es" />} />
+          <Route path="/admin"         element={<AdminPage />} />
+        </Route>
 
-        <Route path="/report/:id" element={<ReportPage locale="en" />} />
-        <Route path="/es/report/:id" element={<ReportPage locale="es" />} />
+        {/* ── Login (no Layout) ────────────────────────────────────── */}
+        <Route path="/login" element={<LoginPage />} />
 
-        <Route path="/admin" element={<AdminPage />} />
+        {/* ── RIWEB Admin dashboard (protected) ───────────────────── */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<Navigate to="clients" replace />} />
+          <Route path="clients" element={<ClientsPage />} />
+          <Route path="bot"     element={<BotPage />} />
+          <Route path="leads"   element={<LeadsPage />} />
+        </Route>
+
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-    </Layout>
+    </AuthProvider>
   );
 }
