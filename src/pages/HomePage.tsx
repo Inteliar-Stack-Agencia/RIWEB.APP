@@ -2,6 +2,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Locale } from "../types";
 import DemoChatPro from "../components/DemoChatPro";
+import { useSEO } from "../hooks/useSEO";
 
 // Code lines updated to reflect AI sales bot theme
 const CODE_LINES = [
@@ -85,6 +86,18 @@ const WA_LINK = "https://wa.me/5491165689145";
 export default function HomePage({ locale }: { locale: Locale }) {
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
+
+  useSEO(locale === "es" ? {
+    title: "RIWEB | Bot de WhatsApp con IA para tu negocio — Ventas 24/7",
+    description: "Creamos tu web y bot de IA que atiende WhatsApp, responde clientes y cierra ventas mientras dormís. Soluciones a medida para negocios en Argentina.",
+    canonical: "https://riweb.app/",
+    lang: "es",
+  } : {
+    title: "RIWEB | AI WhatsApp Bot for your business — Sales 24/7",
+    description: "We build your web and AI bot that handles WhatsApp, responds to customers and closes sales while you sleep. Custom solutions for your business.",
+    canonical: "https://riweb.app/en",
+    lang: "en",
+  });
 
   // Keep audit functionality intact
   const submitAudit = (e: FormEvent) => {
