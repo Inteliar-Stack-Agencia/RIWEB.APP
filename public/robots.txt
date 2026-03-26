@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block dashboard and login from indexing
+Disallow: /dashboard
+Disallow: /dashboard/
+Disallow: /login
+
+Sitemap: https://riweb.app/sitemap.xml
