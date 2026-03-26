@@ -80,7 +80,7 @@ function CodeSimulation() {
   );
 }
 
-const WA_LINK = "https://wa.me/549XXXXXXXXXX"; // <-- reemplazá con tu número real
+const WA_LINK = "https://wa.me/5491165689145";
 
 export default function HomePage({ locale }: { locale: Locale }) {
   const navigate = useNavigate();

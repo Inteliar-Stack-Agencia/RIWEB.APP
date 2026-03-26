@@ -8,7 +8,7 @@ const EXAMPLES = [
   { label: "Servicio técnico", value: "reparación" },
 ];
 
-const WA_NUMBER = "549XXXXXXXXXX"; // <-- reemplazá con tu número real
+const WA_NUMBER = "5491165689145";
 
 function detectLang(input: string): "es" | "en" {
   const esHints = ["rest", "ropa", "repar", "comida", "tienda", "gym", "belle", "restaurante", "reparación", "pizza", "zapat"];
