@@ -228,11 +228,30 @@ export default function HomePage({ locale }: { locale: Locale }) {
           : "Your business selling and responding automatically while you sleep"}
       </h1>
 
-      <p className="landing-subtitle" style={{ fontSize: "1.35rem", background: "linear-gradient(135deg, #ffffff 30%, #f59e0b 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", maxWidth: "580px", margin: "0 auto 1rem", lineHeight: 1.6 }}>
+      <p className="landing-subtitle" style={{ fontSize: "1.35rem", background: "linear-gradient(135deg, #ffffff 30%, #f59e0b 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", maxWidth: "580px", margin: "0 auto 0.75rem", lineHeight: 1.6 }}>
         {locale === "es"
           ? "Creamos tu web + bot con IA que atiende WhatsApp y cierra ventas 24/7. Si lo necesitás, también armamos tu sistema de gestión."
           : "We build your web + AI bot that handles WhatsApp and closes sales 24/7. Need more? We also build your management system."}
       </p>
+
+      {/* Agent AI badge */}
+      <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+        <span style={{
+          display: "inline-block",
+          padding: "0.3rem 1.1rem",
+          borderRadius: "999px",
+          border: "1px solid rgba(245,158,11,0.4)",
+          background: "rgba(245,158,11,0.08)",
+          fontSize: "0.9rem",
+          color: "#f59e0b",
+          fontWeight: 600,
+          letterSpacing: "0.01em",
+        }}>
+          {locale === "es"
+            ? "🤖 Bot con IA que funciona como un agente de ventas"
+            : "🤖 AI bot that works like a sales agent"}
+        </span>
+      </div>
 
       {/* Interliar Stack attribution */}
       <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
@@ -505,6 +524,76 @@ export default function HomePage({ locale }: { locale: Locale }) {
               {locale === "es" ? "✦ Analizar gratis" : "✦ Analyze free"}
             </button>
           </form>
+        </section>
+
+        {/* ── FAQ ──────────────────────────────────────────────────────── */}
+        <section className="card landing-section">
+          <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+            {locale === "es" ? "Preguntas frecuentes" : "Frequently asked questions"}
+          </h2>
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            {(locale === "es" ? [
+              {
+                q: "🤖 ¿Bot o agente IA? ¿Cuál es la diferencia?",
+                a: "Un bot responde mensajes simples. Un agente IA entiende lo que el cliente quiere, hace preguntas y busca cerrar la venta. En RIWEB usamos bots con inteligencia de agente IA. No solo responde… vende.",
+              },
+              {
+                q: "💬 ¿Esto realmente vende o solo responde?",
+                a: "Está diseñado para vender. Responde rápido, guía al cliente y lo lleva a tomar una decisión.",
+              },
+              {
+                q: "📲 ¿Funciona con WhatsApp?",
+                a: "Sí. De hecho, es donde mejor funciona. Tus clientes ya están ahí.",
+              },
+              {
+                q: "⚙️ ¿Tengo que configurarlo yo?",
+                a: "No. Nosotros lo dejamos funcionando listo para tu negocio.",
+              },
+              {
+                q: "🧠 ¿Se puede adaptar a mi rubro?",
+                a: "Sí. Se entrena con tu negocio: productos, precios, forma de vender.",
+              },
+              {
+                q: "💸 ¿Esto reemplaza a una persona?",
+                a: "No, pero te ahorra la mayoría de las respuestas repetitivas y te deja solo los clientes listos para comprar.",
+              },
+            ] : [
+              {
+                q: "🤖 Bot or AI agent? What's the difference?",
+                a: "A bot answers simple messages. An AI agent understands what the customer wants, asks questions and tries to close the sale. At RIWEB we use bots with AI agent intelligence. It doesn't just respond… it sells.",
+              },
+              {
+                q: "💬 Does it actually sell or just respond?",
+                a: "It's designed to sell. It responds fast, guides the customer and leads them to make a decision.",
+              },
+              {
+                q: "📲 Does it work with WhatsApp?",
+                a: "Yes. In fact, that's where it works best. Your customers are already there.",
+              },
+              {
+                q: "⚙️ Do I have to configure it myself?",
+                a: "No. We set it up and leave it ready for your business.",
+              },
+              {
+                q: "🧠 Can it adapt to my industry?",
+                a: "Yes. It's trained with your business: products, prices, your way of selling.",
+              },
+              {
+                q: "💸 Does this replace a person?",
+                a: "No, but it handles most repetitive replies and leaves you only the customers ready to buy.",
+              },
+            ]).map((item) => (
+              <div key={item.q} style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.07)",
+                borderRadius: "12px",
+                padding: "1rem 1.25rem",
+              }}>
+                <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: "0.4rem" }}>{item.q}</div>
+                <div style={{ fontSize: "0.88rem", color: "var(--text-muted)", lineHeight: 1.6 }}>{item.a}</div>
+              </div>
+            ))}
+          </div>
         </section>
 
         {/* ── CTA FINAL ────────────────────────────────────────────────── */}
