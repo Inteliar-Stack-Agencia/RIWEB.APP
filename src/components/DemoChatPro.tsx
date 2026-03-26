@@ -341,7 +341,6 @@ export default function DemoChatPro({ locale }: { locale: Locale }) {
               placeholder={lang === "es" ? "Escribí tu consulta..." : "Type your question..."}
               style={{ flex: 1, minWidth: 0 }}
               disabled={typing}
-              autoFocus
             />
             <button
               onClick={sendMessage}
