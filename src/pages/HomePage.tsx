@@ -215,11 +215,26 @@ export default function HomePage({ locale }: { locale: Locale }) {
           : "Your business selling and responding automatically while you sleep"}
       </h1>
 
-      <p className="landing-subtitle" style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.82)", maxWidth: "580px", margin: "0 auto 2rem" }}>
+      <p className="landing-subtitle" style={{ fontSize: "1.35rem", background: "linear-gradient(135deg, #ffffff 30%, #f59e0b 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", maxWidth: "580px", margin: "0 auto 1rem", lineHeight: 1.6 }}>
         {locale === "es"
           ? "Creamos tu web + bot con IA que atiende WhatsApp y cierra ventas 24/7. Si lo necesitás, también armamos tu sistema de gestión."
           : "We build your web + AI bot that handles WhatsApp and closes sales 24/7. Need more? We also build your management system."}
       </p>
+
+      {/* Interliar Stack attribution */}
+      <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+        <span style={{
+          display: "inline-block",
+          fontSize: "0.78rem",
+          color: "rgba(202,138,4,0.7)",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          fontWeight: 500,
+        }}>
+          {locale === "es" ? "Una solución de" : "A solution by"}{" "}
+          <strong style={{ color: "rgba(202,138,4,1)" }}>Interliar Stack</strong>
+        </span>
+      </div>
 
       {/* Hero CTAs */}
       <div style={{
@@ -269,9 +284,14 @@ export default function HomePage({ locale }: { locale: Locale }) {
       {/* ── SECCIÓN 1: Lo que vas a lograr ───────────────────────────────── */}
       <div>
         <section className="card landing-section">
-          <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+          <h2 style={{ textAlign: "center", marginBottom: "0.6rem" }}>
             {locale === "es" ? "Lo que vas a lograr con Riweb" : "What you'll achieve with Riweb"}
           </h2>
+          <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "1.5rem" }}>
+            {locale === "es"
+              ? "En RIWEB creamos soluciones a medida para tu negocio"
+              : "At RIWEB we create custom solutions for your business"}
+          </p>
           <div style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
@@ -328,13 +348,32 @@ export default function HomePage({ locale }: { locale: Locale }) {
         {/* ── NUEVA SECCIÓN: No es solo un bot ─────────────────────────── */}
         <section className="card landing-section">
           <h2 style={{ textAlign: "center", marginBottom: "0.5rem" }}>
-            {locale === "es" ? "No es solo un bot. Es un sistema completo" : "Not just a bot. A complete system"}
-          </h2>
-          <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: "1.75rem", fontSize: "0.95rem" }}>
             {locale === "es"
-              ? "No solo automatizamos tus ventas. También podés tener tu propio sistema para gestionar tu negocio."
-              : "We don't just automate your sales. You can also have your own system to manage your business."}
+              ? "No es solo un bot. Creamos el sistema completo para tu negocio"
+              : "Not just a bot. We build the complete system for your business"}
+          </h2>
+          <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: "0.75rem", fontSize: "0.95rem" }}>
+            {locale === "es"
+              ? "En RIWEB desarrollamos soluciones a medida: web, automatización con IA y sistemas de gestión adaptados a cómo trabaja tu negocio."
+              : "At RIWEB we develop custom solutions: web, AI automation and management systems tailored to how your business works."}
           </p>
+          {/* No usamos plantillas */}
+          <div style={{ textAlign: "center", marginBottom: "1.75rem" }}>
+            <span style={{
+              display: "inline-block",
+              padding: "0.3rem 1rem",
+              borderRadius: "999px",
+              border: "1px solid rgba(202,138,4,0.35)",
+              background: "rgba(202,138,4,0.08)",
+              fontSize: "0.8rem",
+              color: "rgba(202,138,4,0.9)",
+              fontWeight: 500,
+            }}>
+              {locale === "es"
+                ? "✦ No usamos plantillas. Lo adaptamos a tu negocio."
+                : "✦ No templates. Built around your business."}
+            </span>
+          </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             {/* Tier 1 */}
@@ -345,15 +384,15 @@ export default function HomePage({ locale }: { locale: Locale }) {
               padding: "1.1rem 1.25rem",
             }}>
               <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.2rem" }}>
-                🔹 {locale === "es" ? "Web + Bot IA" : "Web + AI Bot"}
+                🔹 {locale === "es" ? "Web + Bot IA — implementación a medida" : "Web + AI Bot — custom implementation"}
               </div>
               <div style={{ fontSize: "0.78rem", color: "rgba(202,138,4,0.9)", marginBottom: "0.4rem", fontWeight: 600 }}>
                 {locale === "es" ? "Ideal para empezar rápido" : "Ideal to start fast"}
               </div>
               <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
                 {locale === "es"
-                  ? "Web profesional + asistente que responde y vende por WhatsApp."
-                  : "Professional web + assistant that responds and sells on WhatsApp."}
+                  ? "Web profesional + asistente que responde y vende por WhatsApp, adaptado a tu negocio."
+                  : "Professional web + assistant that responds and sells on WhatsApp, adapted to your business."}
               </div>
             </div>
 
@@ -381,15 +420,15 @@ export default function HomePage({ locale }: { locale: Locale }) {
                 🔥 {locale === "es" ? "el fuerte" : "most popular"}
               </div>
               <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.2rem" }}>
-                🔹 {locale === "es" ? "Web + Bot + Sistema de gestión" : "Web + Bot + Management System"}
+                🔹 {locale === "es" ? "Web + Bot + Sistema de gestión desarrollado para vos" : "Web + Bot + Management System built for you"}
               </div>
               <div style={{ fontSize: "0.78rem", color: "rgba(202,138,4,0.9)", marginBottom: "0.4rem", fontWeight: 600 }}>
                 {locale === "es" ? "Para negocios que quieren escalar" : "For businesses that want to scale"}
               </div>
               <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
                 {locale === "es"
-                  ? "Controlá pedidos, clientes, stock o agenda desde un dashboard simple."
-                  : "Manage orders, customers, stock or schedule from a simple dashboard."}
+                  ? "Controlá pedidos, clientes, stock o agenda desde un dashboard construido según cómo trabaja tu negocio."
+                  : "Manage orders, customers, stock or schedule from a dashboard built around how your business works."}
               </div>
             </div>
 
