@@ -126,8 +126,8 @@ export default function DashboardLayout() {
             className="admin-mobile-menu"
             style={{
               background: "none", border: "none", cursor: "pointer",
-              color: "var(--text-main)", fontSize: "1.3rem", padding: "0.25rem",
-              lineHeight: 1,
+              color: "var(--text-main)", fontSize: "1.4rem", padding: "0.5rem",
+              lineHeight: 1, borderRadius: "8px",
             }}
           >
             ☰

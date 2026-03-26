@@ -149,6 +149,7 @@ export default function ClientsPage() {
         </div>
       ) : (
         <div className="admin-card" style={{ padding: 0, overflow: "hidden" }}>
+          <div className="admin-table-scroll">
           <table className="admin-table">
             <thead>
               <tr>
@@ -219,6 +220,7 @@ export default function ClientsPage() {
               })}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>
