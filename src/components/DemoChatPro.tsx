@@ -68,12 +68,15 @@ export default function DemoChatPro({ locale }: { locale: Locale }) {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<GroqMsg[]>([]);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const examples = lang === "es" ? EXAMPLES_ES : EXAMPLES_EN;
 
-  // Auto-scroll to bottom on new messages
+  // Scroll within the chat container only (not the page)
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (msgs.length === 0) return;
+    const el = messagesContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [msgs, typing]);
 
   const startDemo = async (value?: string) => {
@@ -277,7 +280,7 @@ export default function DemoChatPro({ locale }: { locale: Locale }) {
         )}
 
         {/* Messages */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", flex: 1, overflowY: "auto", maxHeight: 300 }}>
+        <div ref={messagesContainerRef} style={{ display: "flex", flexDirection: "column", gap: "0.5rem", flex: 1, overflowY: "auto", maxHeight: 300 }}>
           {msgs.map((m, i) => (
             <div
               key={i}

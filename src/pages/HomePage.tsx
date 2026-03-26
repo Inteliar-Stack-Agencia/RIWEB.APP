@@ -218,10 +218,19 @@ export default function HomePage({ locale }: { locale: Locale }) {
       <div className="bg-orb orb-1" />
       <div className="bg-orb orb-2" />
 
+      {/* ── HERO — fills full viewport ────────────────────────────────────── */}
+      <div style={{
+        minHeight: "calc(100svh - 80px)",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        paddingTop: "2rem",
+        paddingBottom: "2rem",
+      }}>
+
       {/* Brand badge */}
       <div className="landing-brand">RIWEB</div>
 
-      {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <h1 className="landing-title">
         {locale === "es"
           ? "Tu negocio vendiendo y respondiendo solo mientras duermes"
@@ -274,7 +283,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         gap: "1rem",
         justifyContent: "center",
         flexWrap: "wrap",
-        marginBottom: "3rem",
+        marginBottom: "0",
       }}>
         <a href="#demo" className="btn-primary" style={{ textDecoration: "none" }}>
           {locale === "es" ? "👉 Probar demo gratis" : "👉 Try free demo"}
@@ -289,6 +298,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           {locale === "es" ? "👉 Hablá por WhatsApp" : "👉 Talk on WhatsApp"}
         </a>
       </div>
+      </div> {/* end hero full-viewport wrapper */}
 
       {/* ── DEMO ─────────────────────────────────────────────────────────── */}
       <div style={{ marginBottom: "3.5rem" }}>
