@@ -1,7 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Locale } from "../types";
-import DemoChat from "../components/DemoChat";
+import DemoChatPro from "../components/DemoChatPro";
 
 // Code lines updated to reflect AI sales bot theme
 const CODE_LINES = [
@@ -80,6 +80,8 @@ function CodeSimulation() {
   );
 }
 
+const WA_LINK = "https://wa.me/549XXXXXXXXXX"; // <-- reemplazá con tu número real
+
 export default function HomePage({ locale }: { locale: Locale }) {
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
@@ -91,24 +93,101 @@ export default function HomePage({ locale }: { locale: Locale }) {
     navigate(`${prefix}/audit?url=${encodeURIComponent(url)}`);
   };
 
-  const serviceFeatures = locale === "es"
+  // ── Sección 1: Lo que vas a lograr ──────────────────────────────────────
+  const benefitCards = locale === "es"
     ? [
-      "Tu bot responde clientes en WhatsApp mientras dormís",
-      "Agenda citas, toma pedidos y cierra ventas solo",
-      "Sitio web profesional que carga en menos de 1 segundo",
-      "Integración total con tu negocio sin trabajo manual",
-      "Leads capturados y guardados automáticamente",
-      "Soporte 24/7 sin contratar más personal",
+      {
+        icon: "📈",
+        title: "Más ventas automáticas",
+        desc: "Tu bot responde cada consulta al instante, incluso mientras dormís.",
+        color: "rgba(34,197,94,0.12)",
+        border: "rgba(34,197,94,0.25)",
+      },
+      {
+        icon: "🚨",
+        title: "Dejá de perder clientes",
+        desc: "Cada mensaje sin responder es una venta menos. Esto lo soluciona.",
+        color: "rgba(239,68,68,0.12)",
+        border: "rgba(239,68,68,0.25)",
+      },
+      {
+        icon: "🤖",
+        title: "Tu propio vendedor IA",
+        desc: "Podés ajustar cómo responde, qué ofrece y cómo vende.",
+        color: "rgba(168,85,247,0.12)",
+        border: "rgba(168,85,247,0.25)",
+      },
+      {
+        icon: "🌐",
+        title: "Web que convierte",
+        desc: "No solo te ven… te escriben y compran.",
+        color: "rgba(59,130,246,0.12)",
+        border: "rgba(59,130,246,0.25)",
+      },
+      {
+        icon: "💬",
+        title: "Todo conectado a WhatsApp",
+        desc: "Donde ya están tus clientes.",
+        color: "rgba(249,115,22,0.12)",
+        border: "rgba(249,115,22,0.25)",
+      },
     ]
     : [
-      "Your bot answers customers on WhatsApp while you sleep",
-      "Books appointments, takes orders and closes sales automatically",
-      "Professional website loading in under 1 second",
-      "Full integration with your business, zero manual work",
-      "Leads captured and saved automatically",
-      "24/7 support without hiring more staff",
+      {
+        icon: "📈",
+        title: "More automatic sales",
+        desc: "Your bot answers every query instantly, even while you sleep.",
+        color: "rgba(34,197,94,0.12)",
+        border: "rgba(34,197,94,0.25)",
+      },
+      {
+        icon: "🚨",
+        title: "Stop losing customers",
+        desc: "Every unanswered message is a lost sale. This solves it.",
+        color: "rgba(239,68,68,0.12)",
+        border: "rgba(239,68,68,0.25)",
+      },
+      {
+        icon: "🤖",
+        title: "Your own AI seller",
+        desc: "You can adjust how it responds, what it offers and how it sells.",
+        color: "rgba(168,85,247,0.12)",
+        border: "rgba(168,85,247,0.25)",
+      },
+      {
+        icon: "🌐",
+        title: "Web that converts",
+        desc: "They don't just see you… they message and buy.",
+        color: "rgba(59,130,246,0.12)",
+        border: "rgba(59,130,246,0.25)",
+      },
+      {
+        icon: "💬",
+        title: "All connected to WhatsApp",
+        desc: "Where your customers already are.",
+        color: "rgba(249,115,22,0.12)",
+        border: "rgba(249,115,22,0.25)",
+      },
     ];
 
+  // ── Sección 2: Si no automatizás ────────────────────────────────────────
+  const urgencyItems = locale === "es"
+    ? [
+      "Tus clientes escriben y esperan respuesta inmediata",
+      "Si tardás, se van con otro",
+      "Responder todo manualmente no escala",
+      "Un bot trabaja 24/7 sin cansarse",
+      "Cada día sin esto = ventas perdidas",
+    ]
+    : [
+      "Your customers write and expect an immediate reply",
+      "If you're slow, they go to someone else",
+      "Answering everything manually doesn't scale",
+      "A bot works 24/7 without getting tired",
+      "Every day without this = lost sales",
+    ];
+
+  // ── Sección 3: ¿Cómo funciona? (sin cambios) ───────────────────────────
   const howItWorks = locale === "es"
     ? [
       { title: "Contanos qué vendés", desc: "En 10 minutos te armamos el bot y el sitio web." },
@@ -121,24 +200,6 @@ export default function HomePage({ locale }: { locale: Locale }) {
       { title: "You earn, the bot works", desc: "Automatic follow-up, sales without effort." },
     ];
 
-  const whyNow = locale === "es"
-    ? [
-      "Tus competidores ya están usando IA para vender más",
-      "Cada cliente sin respuesta rápida es una venta perdida",
-      "Un bot trabaja 24/7 sin salario ni errores",
-      "WhatsApp es donde tus clientes ya están",
-      "El costo de no automatizar es mayor cada mes",
-      "Configurable en un día, funciona para siempre",
-    ]
-    : [
-      "Your competitors are already using AI to sell more",
-      "Every unanswered customer is a lost sale",
-      "A bot works 24/7 with no salary and no mistakes",
-      "WhatsApp is where your customers already are",
-      "The cost of not automating grows every month",
-      "Set up in one day, runs forever",
-    ];
-
   return (
     <section className="landing-shell">
       <div className="bg-orb orb-1" />
@@ -147,21 +208,20 @@ export default function HomePage({ locale }: { locale: Locale }) {
       {/* Brand badge */}
       <div className="landing-brand">RIWEB</div>
 
-      {/* Hero headline — updated for sales conversion */}
+      {/* ── HERO ─────────────────────────────────────────────────────────── */}
       <h1 className="landing-title">
         {locale === "es"
-          ? "Tu negocio vendiendo y respondiendo solo, mientras dormís"
-          : "Your business selling and replying automatically while you sleep"}
+          ? "Tu negocio vendiendo y respondiendo solo mientras dormís"
+          : "Your business selling and responding automatically while you sleep"}
       </h1>
 
-      {/* Hero subheadline */}
       <p className="landing-subtitle">
         {locale === "es"
-          ? "Creamos tu sitio web + asistente de ventas con IA que responde a tus clientes por WhatsApp 24/7"
-          : "We create your website + AI sales assistant that answers your customers on WhatsApp 24/7"}
+          ? "Creamos tu web + bot con IA que atiende WhatsApp, responde consultas y cierra ventas 24/7. Y si lo necesitás, también te armamos un sistema para gestionar todo desde un solo lugar."
+          : "We create your web + AI bot that handles WhatsApp, answers queries and closes sales 24/7. And if you need it, we also build a system to manage everything from one place."}
       </p>
 
-      {/* Primary hero CTAs */}
+      {/* Hero CTAs */}
       <div style={{
         display: "flex",
         gap: "1rem",
@@ -169,46 +229,193 @@ export default function HomePage({ locale }: { locale: Locale }) {
         flexWrap: "wrap",
         marginBottom: "3rem",
       }}>
-        {/* Replace href with actual WhatsApp number: https://wa.me/YOUR_NUMBER */}
         <a href="#demo" className="btn-primary" style={{ textDecoration: "none" }}>
-          {locale === "es" ? "Crear mi bot ahora" : "Create my AI sales bot"}
+          {locale === "es" ? "👉 Probar demo gratis" : "👉 Try free demo"}
         </a>
-        <a href="#demo" className="btn-outline-white" style={{ textDecoration: "none" }}>
-          Ver demo
+        <a
+          href={WA_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn-outline-white"
+          style={{ textDecoration: "none" }}
+        >
+          {locale === "es" ? "👉 Hablá por WhatsApp" : "👉 Talk on WhatsApp"}
         </a>
       </div>
 
-      {/* Interactive demo section */}
+      {/* ── DEMO ─────────────────────────────────────────────────────────── */}
       <div style={{ marginBottom: "3.5rem" }}>
+        <h2 style={{ textAlign: "center", marginBottom: "0.5rem", fontSize: "1.5rem" }}>
+          {locale === "es" ? "Probá cómo respondería tu negocio" : "See how your business would respond"}
+        </h2>
         <p style={{
           textAlign: "center",
-          marginBottom: "1.25rem",
+          marginBottom: "1.5rem",
           color: "var(--text-muted)",
           fontSize: "0.95rem",
         }}>
           {locale === "es"
-            ? "Escribí qué vendés y mirá cómo responde tu bot:"
-            : "Type what you sell and see your bot respond:"}
+            ? "Escribí qué vendés y mirá cómo trabajaría tu bot"
+            : "Type what you sell and see how your bot would work"}
         </p>
-        <DemoChat />
+        <DemoChatPro />
       </div>
 
-      {/* Code simulation — shows the engine behind the scenes */}
+      {/* Code simulation */}
       <div style={{ maxWidth: '640px', margin: '0 auto 5rem', width: '100%' }}>
         <CodeSimulation />
       </div>
 
-      {/* Content sections */}
+      {/* ── SECCIÓN 1: Lo que vas a lograr ───────────────────────────────── */}
       <div>
         <section className="card landing-section">
-          <h2>{locale === "es" ? "Lo que incluye tu bot" : "What your bot does"}</h2>
-          <ul className="service-list">
-            {serviceFeatures.map((item) => (
-              <li key={item}>{item}</li>
+          <h2 style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+            {locale === "es" ? "Lo que vas a lograr con Riweb" : "What you'll achieve with Riweb"}
+          </h2>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "1rem",
+          }}>
+            {benefitCards.map((card) => (
+              <div
+                key={card.title}
+                style={{
+                  background: card.color,
+                  border: `1px solid ${card.border}`,
+                  borderRadius: "14px",
+                  padding: "1.1rem 1rem",
+                }}
+              >
+                <div style={{ fontSize: "1.6rem", marginBottom: "0.5rem" }}>{card.icon}</div>
+                <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: "0.35rem" }}>
+                  {card.title}
+                </div>
+                <div style={{ fontSize: "0.82rem", color: "var(--text-muted)", lineHeight: 1.5 }}>
+                  {card.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── SECCIÓN 2: Si no automatizás ─────────────────────────────── */}
+        <section className="card landing-section">
+          <h2 style={{ marginBottom: "1.25rem" }}>
+            {locale === "es"
+              ? "Si no automatizás, estás perdiendo plata"
+              : "If you don't automate, you're losing money"}
+          </h2>
+          <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            {urgencyItems.map((item) => (
+              <li
+                key={item}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "0.65rem",
+                  fontSize: "0.95rem",
+                  color: "var(--text-muted)",
+                }}
+              >
+                <span style={{ color: "#f59e0b", fontWeight: 700, flexShrink: 0 }}>→</span>
+                {item}
+              </li>
             ))}
           </ul>
         </section>
 
+        {/* ── NUEVA SECCIÓN: No es solo un bot ─────────────────────────── */}
+        <section className="card landing-section">
+          <h2 style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+            {locale === "es" ? "No es solo un bot. Es un sistema completo" : "Not just a bot. A complete system"}
+          </h2>
+          <p style={{ textAlign: "center", color: "var(--text-muted)", marginBottom: "1.75rem", fontSize: "0.95rem" }}>
+            {locale === "es"
+              ? "No solo automatizamos tus ventas. También podés tener tu propio sistema para gestionar tu negocio."
+              : "We don't just automate your sales. You can also have your own system to manage your business."}
+          </p>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            {/* Tier 1 */}
+            <div style={{
+              background: "rgba(59,130,246,0.08)",
+              border: "1px solid rgba(59,130,246,0.25)",
+              borderRadius: "14px",
+              padding: "1.1rem 1.25rem",
+            }}>
+              <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.2rem" }}>
+                🔹 {locale === "es" ? "Web + Bot IA" : "Web + AI Bot"}
+              </div>
+              <div style={{ fontSize: "0.78rem", color: "rgba(202,138,4,0.9)", marginBottom: "0.4rem", fontWeight: 600 }}>
+                {locale === "es" ? "Ideal para empezar rápido" : "Ideal to start fast"}
+              </div>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                {locale === "es"
+                  ? "Web profesional + asistente que responde y vende por WhatsApp."
+                  : "Professional web + assistant that responds and sells on WhatsApp."}
+              </div>
+            </div>
+
+            {/* Tier 2 — destacado */}
+            <div style={{
+              background: "rgba(168,85,247,0.1)",
+              border: "1px solid rgba(168,85,247,0.35)",
+              borderRadius: "14px",
+              padding: "1.1rem 1.25rem",
+              position: "relative",
+              overflow: "hidden",
+            }}>
+              <div style={{
+                position: "absolute",
+                top: "0.6rem",
+                right: "0.75rem",
+                background: "rgba(168,85,247,0.25)",
+                border: "1px solid rgba(168,85,247,0.5)",
+                borderRadius: "999px",
+                padding: "0.15rem 0.6rem",
+                fontSize: "0.7rem",
+                color: "#c084fc",
+                fontWeight: 600,
+              }}>
+                🔥 {locale === "es" ? "el fuerte" : "most popular"}
+              </div>
+              <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.2rem" }}>
+                🔹 {locale === "es" ? "Web + Bot + Sistema de gestión" : "Web + Bot + Management System"}
+              </div>
+              <div style={{ fontSize: "0.78rem", color: "rgba(202,138,4,0.9)", marginBottom: "0.4rem", fontWeight: 600 }}>
+                {locale === "es" ? "Para negocios que quieren escalar" : "For businesses that want to scale"}
+              </div>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                {locale === "es"
+                  ? "Controlá pedidos, clientes, stock o agenda desde un dashboard simple."
+                  : "Manage orders, customers, stock or schedule from a simple dashboard."}
+              </div>
+            </div>
+
+            {/* Tier 3 */}
+            <div style={{
+              background: "rgba(34,197,94,0.08)",
+              border: "1px solid rgba(34,197,94,0.25)",
+              borderRadius: "14px",
+              padding: "1.1rem 1.25rem",
+            }}>
+              <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: "0.2rem" }}>
+                🔹 {locale === "es" ? "Desarrollo a medida" : "Custom development"}
+              </div>
+              <div style={{ fontSize: "0.78rem", color: "rgba(202,138,4,0.9)", marginBottom: "0.4rem", fontWeight: 600 }}>
+                {locale === "es" ? "Si tu negocio es más complejo" : "If your business is more complex"}
+              </div>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                {locale === "es"
+                  ? "Te construimos exactamente lo que necesitás."
+                  : "We build exactly what you need."}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Cómo funciona (sin cambios) ───────────────────────────────── */}
         <section className="card landing-section">
           <h2>{locale === "es" ? "¿Cómo funciona?" : "How it works"}</h2>
           <ol className="step-list">
@@ -221,15 +428,6 @@ export default function HomePage({ locale }: { locale: Locale }) {
               </li>
             ))}
           </ol>
-        </section>
-
-        <section className="card landing-section">
-          <h2>{locale === "es" ? "¿Por qué empezar hoy?" : "Why start today?"}</h2>
-          <ul className="service-list check-list">
-            {whyNow.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
         </section>
 
         {/* Secondary: keep audit form accessible for existing website owners */}
@@ -257,26 +455,31 @@ export default function HomePage({ locale }: { locale: Locale }) {
           </form>
         </section>
 
-        {/* Final CTA section with improved copy */}
+        {/* ── CTA FINAL ────────────────────────────────────────────────── */}
         <section className="final-cta" style={{ position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'relative', zIndex: 1 }}>
             <h2>
               {locale === "es"
-                ? "¿Listo para vender más sin trabajar más?"
-                : "Ready to sell more without working more?"}
+                ? "Dejemos de perder clientes desde hoy"
+                : "Let's stop losing customers starting today"}
             </h2>
             <p className="muted" style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '3rem', fontSize: '1.1rem' }}>
               {locale === "es"
-                ? "Tu bot empieza a responder clientes desde hoy."
-                : "Your bot starts answering customers today."}
+                ? "En minutos podés tener tu propio sistema funcionando."
+                : "In minutes you can have your own system running."}
             </p>
             <div className="final-cta-actions">
-              {/* Replace with actual WhatsApp number in both links */}
               <a href="#demo" className="btn-white" style={{ textDecoration: "none" }}>
-                {locale === "es" ? "Crear mi bot ahora" : "Crear mi bot ahora"}
+                {locale === "es" ? "👉 Crear mi bot ahora" : "👉 Create my bot now"}
               </a>
-              <a href="#demo" className="btn-outline-white" style={{ textDecoration: "none" }}>
-                Hablar por WhatsApp
+              <a
+                href={WA_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-outline-white"
+                style={{ textDecoration: "none" }}
+              >
+                {locale === "es" ? "👉 Hablá por WhatsApp" : "👉 Talk on WhatsApp"}
               </a>
             </div>
           </div>
