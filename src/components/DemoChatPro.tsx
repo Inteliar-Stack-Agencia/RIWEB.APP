@@ -7,7 +7,7 @@ type GroqMsg = { role: "system" | "user" | "assistant"; content: string };
 
 const WA_NUMBER = "5491165689145";
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY as string;
-const GROQ_MODEL = import.meta.env.VITE_GROQ_MODEL as string ?? "openai/gpt-oss-120b";
+const GROQ_MODEL = (import.meta.env.VITE_GROQ_MODEL as string) || "llama-3.3-70b-versatile";
 const GROQ_BASE_URL = import.meta.env.VITE_GROQ_BASE_URL as string ?? "https://api.groq.com/openai/v1";
 
 const EXAMPLES_ES = [

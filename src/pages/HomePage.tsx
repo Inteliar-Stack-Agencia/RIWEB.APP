@@ -190,7 +190,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
   // ── Sección 3: ¿Cómo funciona? (sin cambios) ───────────────────────────
   const howItWorks = locale === "es"
     ? [
-      { title: "Contanos qué vendés", desc: "En 10 minutos te armamos el bot y el sitio web." },
+      { title: "Contanos qué vendés", desc: "Nos juntamos, entendemos tu negocio y armamos la solución a medida." },
       { title: "Activamos tu bot en WhatsApp", desc: "Empieza a responder clientes solo, desde el primer día." },
       { title: "Vos cobrás, el bot trabaja", desc: "Seguimiento automático, ventas sin esfuerzo." },
     ]
