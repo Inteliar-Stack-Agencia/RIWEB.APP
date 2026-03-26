@@ -215,7 +215,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
           : "Your business selling and responding automatically while you sleep"}
       </h1>
 
-      <p className="landing-subtitle" style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.82)", maxWidth: "580px", margin: "0 auto 2rem" }}>
+      <p className="landing-subtitle" style={{ fontSize: "1.35rem", background: "linear-gradient(135deg, #ffffff 30%, #f59e0b 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text", maxWidth: "580px", margin: "0 auto 2rem", lineHeight: 1.6 }}>
         {locale === "es"
           ? "Creamos tu web + bot con IA que atiende WhatsApp y cierra ventas 24/7. Si lo necesitás, también armamos tu sistema de gestión."
           : "We build your web + AI bot that handles WhatsApp and closes sales 24/7. Need more? We also build your management system."}
