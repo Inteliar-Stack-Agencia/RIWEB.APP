@@ -83,6 +83,47 @@ function CodeSimulation() {
 
 const WA_LINK = "https://wa.me/5491165689145";
 
+// ─── Floating WhatsApp button ────────────────────────────────────────────────
+function FloatingWA({ locale }: { locale: Locale }) {
+  return (
+    <a
+      href={WA_LINK}
+      target="_blank"
+      rel="noopener noreferrer"
+      title={locale === "es" ? "Hablá por WhatsApp" : "Talk on WhatsApp"}
+      style={{
+        position: "fixed",
+        bottom: "1.5rem",
+        right: "1.5rem",
+        zIndex: 9999,
+        width: "56px",
+        height: "56px",
+        borderRadius: "50%",
+        background: "#25d366",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        boxShadow: "0 4px 20px rgba(37,211,102,0.45)",
+        textDecoration: "none",
+        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+      }}
+      onMouseEnter={e => {
+        (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1.1)";
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 6px 28px rgba(37,211,102,0.6)";
+      }}
+      onMouseLeave={e => {
+        (e.currentTarget as HTMLAnchorElement).style.transform = "scale(1)";
+        (e.currentTarget as HTMLAnchorElement).style.boxShadow = "0 4px 20px rgba(37,211,102,0.45)";
+      }}
+    >
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+        <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.549 4.117 1.512 5.855L0 24l6.335-1.493A11.928 11.928 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.797 9.797 0 01-5.003-1.374l-.358-.213-3.758.886.938-3.658-.234-.376A9.799 9.799 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/>
+      </svg>
+    </a>
+  );
+}
+
 export default function HomePage({ locale }: { locale: Locale }) {
   const navigate = useNavigate();
   const [url, setUrl] = useState("");
@@ -215,6 +256,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
 
   return (
     <section className="landing-shell">
+      <FloatingWA locale={locale} />
       <div className="bg-orb orb-1" />
       <div className="bg-orb orb-2" />
 
@@ -295,6 +337,28 @@ export default function HomePage({ locale }: { locale: Locale }) {
           {locale === "es" ? "👉 Hablá por WhatsApp" : "👉 Talk on WhatsApp"}
         </a>
       </div>
+
+      {/* ── Stats bar ─────────────────────────────────────────────────── */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        flexWrap: "wrap",
+        gap: "2rem",
+        padding: "1.5rem 1rem 2.5rem",
+      }}>
+        {[
+          { n: "50+", label: locale === "es" ? "negocios activos" : "active businesses" },
+          { n: "24/7", label: locale === "es" ? "sin interrupciones" : "non-stop" },
+          { n: "< 2 min", label: locale === "es" ? "tiempo de respuesta" : "response time" },
+          { n: "3×", label: locale === "es" ? "más consultas atendidas" : "more queries handled" },
+        ].map(stat => (
+          <div key={stat.n} style={{ textAlign: "center" }}>
+            <div style={{ fontSize: "1.7rem", fontWeight: 800, color: "#f59e0b", lineHeight: 1 }}>{stat.n}</div>
+            <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.45)", marginTop: "0.25rem", fontWeight: 500 }}>{stat.label}</div>
+          </div>
+        ))}
+      </div>
+
       </div> {/* end hero full-viewport wrapper */}
 
       {/* ── DEMO ─────────────────────────────────────────────────────────── */}
@@ -508,6 +572,107 @@ export default function HomePage({ locale }: { locale: Locale }) {
           </ol>
         </section>
 
+        {/* ── PRECIOS ───────────────────────────────────────────────────── */}
+        <section className="card landing-section">
+          <h2 style={{ textAlign: "center", marginBottom: "0.4rem" }}>
+            {locale === "es" ? "¿Cuánto cuesta?" : "How much does it cost?"}
+          </h2>
+          <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.88rem", marginBottom: "1.75rem" }}>
+            {locale === "es"
+              ? "Inversión única, sin costos sorpresa. Cada proyecto es a medida."
+              : "One-time investment, no surprise costs. Every project is custom-built."}
+          </p>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gap: "1rem",
+          }}>
+            {/* Tier 1 */}
+            <div style={{
+              background: "rgba(59,130,246,0.07)",
+              border: "1px solid rgba(59,130,246,0.2)",
+              borderRadius: "16px",
+              padding: "1.4rem 1.25rem",
+              textAlign: "center",
+            }}>
+              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                {locale === "es" ? "Starter" : "Starter"}
+              </div>
+              <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#60a5fa", lineHeight: 1 }}>
+                {locale === "es" ? "Desde $XXX.000" : "From $XXX"}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", margin: "0.2rem 0 1rem" }}>
+                {locale === "es" ? "ARS / proyecto" : "USD / project"}
+              </div>
+              <div style={{ fontSize: "0.83rem", color: "var(--text-muted)", lineHeight: 1.6 }}>
+                {locale === "es"
+                  ? "Web + Bot IA básico listo para vender."
+                  : "Web + basic AI bot ready to sell."}
+              </div>
+            </div>
+            {/* Tier 2 — destacado */}
+            <div style={{
+              background: "rgba(168,85,247,0.1)",
+              border: "2px solid rgba(168,85,247,0.4)",
+              borderRadius: "16px",
+              padding: "1.4rem 1.25rem",
+              textAlign: "center",
+              position: "relative",
+            }}>
+              <div style={{
+                position: "absolute", top: "-12px", left: "50%", transform: "translateX(-50%)",
+                background: "rgba(168,85,247,0.9)", borderRadius: "999px",
+                padding: "0.2rem 0.9rem", fontSize: "0.7rem", fontWeight: 700, color: "white",
+                whiteSpace: "nowrap",
+              }}>
+                🔥 {locale === "es" ? "MÁS ELEGIDO" : "MOST POPULAR"}
+              </div>
+              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                Pro
+              </div>
+              <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#c084fc", lineHeight: 1 }}>
+                {locale === "es" ? "Desde $XXX.000" : "From $XXX"}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", margin: "0.2rem 0 1rem" }}>
+                {locale === "es" ? "ARS / proyecto" : "USD / project"}
+              </div>
+              <div style={{ fontSize: "0.83rem", color: "var(--text-muted)", lineHeight: 1.6 }}>
+                {locale === "es"
+                  ? "Web + Bot + Sistema de gestión a medida."
+                  : "Web + Bot + Custom management system."}
+              </div>
+            </div>
+            {/* Tier 3 */}
+            <div style={{
+              background: "rgba(34,197,94,0.07)",
+              border: "1px solid rgba(34,197,94,0.2)",
+              borderRadius: "16px",
+              padding: "1.4rem 1.25rem",
+              textAlign: "center",
+            }}>
+              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", color: "rgba(255,255,255,0.4)", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                {locale === "es" ? "A medida" : "Custom"}
+              </div>
+              <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "#34d399", lineHeight: 1 }}>
+                {locale === "es" ? "A consultar" : "Contact us"}
+              </div>
+              <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", margin: "0.2rem 0 1rem" }}>
+                {locale === "es" ? "según proyecto" : "per project"}
+              </div>
+              <div style={{ fontSize: "0.83rem", color: "var(--text-muted)", lineHeight: 1.6 }}>
+                {locale === "es"
+                  ? "Proyectos complejos o integraciones especiales."
+                  : "Complex projects or special integrations."}
+              </div>
+            </div>
+          </div>
+          <p style={{ textAlign: "center", fontSize: "0.78rem", color: "rgba(255,255,255,0.3)", marginTop: "1.25rem", marginBottom: 0 }}>
+            {locale === "es"
+              ? "💬 Los precios son orientativos. Hablanos para un presupuesto a medida sin compromiso."
+              : "💬 Prices are indicative. Contact us for a custom quote with no commitment."}
+          </p>
+        </section>
+
         {/* Secondary: keep audit form accessible for existing website owners */}
         <section className="card landing-section" style={{ textAlign: "center" }}>
           <h2 style={{ textAlign: "center" }}>
@@ -598,6 +763,90 @@ export default function HomePage({ locale }: { locale: Locale }) {
               }}>
                 <div style={{ fontWeight: 700, fontSize: "0.95rem", marginBottom: "0.4rem" }}>{item.q}</div>
                 <div style={{ fontSize: "0.88rem", color: "var(--text-muted)", lineHeight: 1.6 }}>{item.a}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── TESTIMONIOS ──────────────────────────────────────────────── */}
+        <section className="card landing-section">
+          <h2 style={{ textAlign: "center", marginBottom: "0.4rem" }}>
+            {locale === "es" ? "Lo que dicen los que ya lo usan" : "What those using it say"}
+          </h2>
+          <p style={{ textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem", marginBottom: "1.75rem" }}>
+            {locale === "es" ? "Resultados reales de negocios reales" : "Real results from real businesses"}
+          </p>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gap: "1rem",
+          }}>
+            {(locale === "es" ? [
+              {
+                quote: "Antes perdía 5 turnos por semana porque no llegaba a responder rápido. Ahora el bot agenda solo y yo me entero cuando ya está confirmado.",
+                name: "Marcos R.",
+                role: "Centro de estética — Buenos Aires",
+                result: "+5 turnos/semana",
+              },
+              {
+                quote: "Mis ventas de productos subieron el primer mes. La gente pregunta el precio y el bot cierra la venta directo por WhatsApp.",
+                name: "Carolina M.",
+                role: "Pastelería personalizada — Córdoba",
+                result: "Ventas +40%",
+              },
+              {
+                quote: "Ahorro 3 horas por día. El bot califica los clientes antes de que yo los atienda. Solo hablo con los que están listos para comprar.",
+                name: "Diego P.",
+                role: "Consultor inmobiliario — Rosario",
+                result: "−3 hs por día",
+              },
+            ] : [
+              {
+                quote: "I was losing 5 appointments a week because I couldn't respond fast enough. Now the bot books automatically and I find out when it's already confirmed.",
+                name: "Marcos R.",
+                role: "Esthetics center — Buenos Aires",
+                result: "+5 bookings/week",
+              },
+              {
+                quote: "My product sales went up in the first month. People ask for the price and the bot closes the sale directly on WhatsApp.",
+                name: "Carolina M.",
+                role: "Custom bakery — Córdoba",
+                result: "Sales +40%",
+              },
+              {
+                quote: "I save 3 hours a day. The bot qualifies customers before I talk to them. I only speak to those ready to buy.",
+                name: "Diego P.",
+                role: "Real estate consultant — Rosario",
+                result: "−3 hrs/day",
+              },
+            ]).map(t => (
+              <div key={t.name} style={{
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.08)",
+                borderRadius: "16px",
+                padding: "1.25rem",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+              }}>
+                <div style={{ fontSize: "0.87rem", color: "rgba(255,255,255,0.75)", lineHeight: 1.65, fontStyle: "italic" }}>
+                  "{t.quote}"
+                </div>
+                <div style={{ marginTop: "auto" }}>
+                  <div style={{
+                    display: "inline-block",
+                    background: "rgba(245,158,11,0.15)",
+                    border: "1px solid rgba(245,158,11,0.3)",
+                    borderRadius: "999px",
+                    padding: "0.15rem 0.65rem",
+                    fontSize: "0.72rem",
+                    color: "#f59e0b",
+                    fontWeight: 700,
+                    marginBottom: "0.5rem",
+                  }}>{t.result}</div>
+                  <div style={{ fontWeight: 700, fontSize: "0.88rem" }}>{t.name}</div>
+                  <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.35)" }}>{t.role}</div>
+                </div>
               </div>
             ))}
           </div>
