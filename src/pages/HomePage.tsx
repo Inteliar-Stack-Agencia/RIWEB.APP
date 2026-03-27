@@ -223,13 +223,10 @@ export default function HomePage({ locale }: { locale: Locale }) {
         minHeight: "calc(100svh - 80px)",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
-        paddingTop: "2rem",
+        justifyContent: "flex-start",
+        paddingTop: "clamp(3rem, 10vh, 6rem)",
         paddingBottom: "2rem",
       }}>
-
-      {/* Brand badge */}
-      <div className="landing-brand">RIWEB</div>
 
       <h1 className="landing-title">
         {locale === "es"

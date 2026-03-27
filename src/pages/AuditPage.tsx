@@ -72,6 +72,8 @@ const METRIC_DESCRIPTIONS: Record<string, { es: string; en: string }> = {
   aiReadiness:  { es: 'Si tu negocio puede conectarse a un bot de WhatsApp o herramientas de automatización. Cuanto más bajo, más lejos estás de vender solo.', en: 'Whether your business can connect to a WhatsApp bot or automation tools. The lower, the further you are from selling on autopilot.' },
   security:     { es: 'Si tu sitio es seguro. Un sitio sin HTTPS hace que el navegador muestre "No es seguro" y los clientes desconfíen.', en: 'Whether your site is secure. A site without HTTPS makes the browser show "Not secure" and customers distrust it.' },
   accessibility:{ es: 'Si cualquier persona puede usar tu sitio sin problemas. También ayuda a que Google te posicione mejor.', en: 'Whether anyone can use your site without problems. It also helps Google rank you better.' },
+  whatsappBot:  { es: 'Si tu sitio tiene un botón de WhatsApp o un bot que responde automáticamente. Sin esto, cada cliente que visita tu web y no te contacta, se pierde para siempre.', en: 'Whether your site has a WhatsApp button or a bot that replies automatically. Without this, every visitor who doesn\'t contact you is a lost customer forever.' },
+  socialPresence: { es: 'Si tu negocio tiene presencia en redes sociales vinculada a tu web. Las redes generan confianza y traen tráfico extra sin pagar publicidad.', en: 'Whether your business has social media presence linked from your site. Social media builds trust and brings extra traffic without paid ads.' },
 };
 
 // ─── Full metrics grid ───────────────────────────────────────────
@@ -90,6 +92,8 @@ function MetricsGrid({ metrics, locale }: {
       { icon: '🤖', label: 'Lista para IA', key: 'aiReadiness' },
       { icon: '🔒', label: 'Seguridad', key: 'security' },
       { icon: '♿', label: 'Fácil de usar', key: 'accessibility' },
+      { icon: '💬', label: 'Tiene WhatsApp o Bot', key: 'whatsappBot' },
+      { icon: '📣', label: 'Está en redes sociales', key: 'socialPresence' },
     ]
     : [
       { icon: '⚡', label: 'Speed', key: 'speed' },
@@ -100,6 +104,8 @@ function MetricsGrid({ metrics, locale }: {
       { icon: '🤖', label: 'AI Ready', key: 'aiReadiness' },
       { icon: '🔒', label: 'Security', key: 'security' },
       { icon: '♿', label: 'Easy to use', key: 'accessibility' },
+      { icon: '💬', label: 'Has WhatsApp or Bot', key: 'whatsappBot' },
+      { icon: '📣', label: 'Social media presence', key: 'socialPresence' },
     ];
 
   const selectedItem = selectedKey ? items.find(i => i.key === selectedKey) : null;
@@ -176,6 +182,8 @@ const fallbackAudit = (url: string, locale: Locale): AuditFunctionResult => ({
     aiReadiness: 40,
     security: 60,
     accessibility: 52,
+    whatsappBot: 20,
+    socialPresence: 30,
   },
   scoreTotal: 49,
   issues: [
