@@ -21,7 +21,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className="topbar">
-        <Link to="/" className="logo">RIWEB.APP</Link>
+        <Link to="/" className="logo" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <img src="/logo.svg" alt="RIWEB logo" style={{ height: "32px", width: "32px" }} />
+          RIWEB.APP
+        </Link>
         <nav>
           <Link to={isEs ? "/es" : "/"} style={navLinkStyle(isHome)}>Home</Link>
           <Link to={isEs ? "/es/audit" : "/audit"} style={navLinkStyle(isAudit)}>Audit</Link>
@@ -29,6 +32,51 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
       <main id="app">{children}</main>
+      <footer style={{
+        textAlign: "center",
+        padding: "2.5rem 1.5rem",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        color: "rgba(255,255,255,0.3)",
+        fontSize: "0.82rem",
+      }}>
+        {/* Brand */}
+        <div style={{ marginBottom: "1rem" }}>
+          <div style={{ fontWeight: 800, fontSize: "1.05rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.05em" }}>
+            RIWEB.APP
+          </div>
+          <div style={{ fontSize: "0.78rem", color: "rgba(245,158,11,0.65)", marginTop: "0.2rem" }}>
+            Web + Bot IA
+          </div>
+        </div>
+
+        {/* Links de confianza */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+          <Link
+            to={isEs ? "/es/privacidad" : "/privacy"}
+            style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none", transition: "color 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#F59E0B")}
+            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
+          >
+            {isEs ? "Política de privacidad" : "Privacy policy"}
+          </Link>
+          <span style={{ opacity: 0.2 }}>·</span>
+          <Link
+            to={isEs ? "/es/terminos" : "/terms"}
+            style={{ color: "rgba(255,255,255,0.4)", textDecoration: "none", transition: "color 0.2s" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#F59E0B")}
+            onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.4)")}
+          >
+            {isEs ? "Términos de servicio" : "Terms of service"}
+          </Link>
+        </div>
+
+        {/* Copyright */}
+        <div style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.2)" }}>
+          {isEs
+            ? <>RIWEB APP · Producto desarrollado por © Inteliar Stack {new Date().getFullYear()}</>
+            : <>RIWEB APP · Product developed by © Inteliar Stack {new Date().getFullYear()}</>}
+        </div>
+      </footer>
     </>
   );
 }
