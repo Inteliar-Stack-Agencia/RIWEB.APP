@@ -96,6 +96,8 @@ export interface AuditFunctionResult {
     speed: number;
     security: number;
     accessibility: number;
+    whatsappBot: number;
+    socialPresence: number;
   };
   scoreTotal: number;
   issues: AuditIssue[];
