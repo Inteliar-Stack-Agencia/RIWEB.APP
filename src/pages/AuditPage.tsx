@@ -19,20 +19,28 @@ function scoreLabel(v: number, locale: Locale) {
 }
 
 // ─── Single metric card ──────────────────────────────────────────
-function MetricCard({ icon, label, value, locale }: {
+function MetricCard({ icon, label, value, locale, selected, onClick }: {
   icon: string; label: string; value: number; locale: Locale;
+  selected?: boolean; onClick?: () => void;
 }) {
   const color = scoreColor(value);
   return (
-    <div style={{
-      background: 'rgba(255,255,255,0.03)',
-      border: `1px solid ${color}33`,
-      borderRadius: 16,
-      padding: '1.25rem 1rem',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '0.6rem',
-    }}>
+    <div
+      onClick={onClick}
+      style={{
+        background: selected ? `${color}18` : 'rgba(255,255,255,0.03)',
+        border: `1px solid ${selected ? color : color + '33'}`,
+        borderRadius: 16,
+        padding: '1.25rem 1rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.6rem',
+        cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        transform: selected ? 'scale(1.02)' : 'scale(1)',
+        boxShadow: selected ? `0 0 20px ${color}30` : 'none',
+      }}
+    >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontSize: '1.3rem' }}>{icon}</span>
         <span style={{
@@ -57,9 +65,22 @@ function MetricCard({ icon, label, value, locale }: {
 }
 
 // ─── Full metrics grid ───────────────────────────────────────────
+const METRIC_DESCRIPTIONS: Record<string, { es: string; en: string }> = {
+  speed:        { es: 'Qué tan rápido carga tu sitio. Un sitio lento pierde hasta el 53% de visitas en mobile. Google también penaliza la velocidad baja en el ranking.', en: 'How fast your site loads. A slow site loses up to 53% of mobile visits. Google also penalizes slow sites in rankings.' },
+  performance:  { es: 'Rendimiento técnico global: uso de recursos, optimización de imágenes, scripts y caché. Afecta directamente la experiencia del usuario.', en: 'Overall technical performance: resource usage, image optimization, scripts and cache. Directly affects user experience.' },
+  seoBasics:    { es: 'Si Google puede encontrar e indexar tu sitio correctamente: títulos, descripciones, etiquetas, canonical y estructura de URLs.', en: 'Whether Google can correctly find and index your site: titles, descriptions, tags, canonical and URL structure.' },
+  mobile:       { es: 'Cómo se ve y funciona tu sitio en celulares. Más del 70% del tráfico web es móvil. Un sitio no responsive pierde la mayoría de clientes.', en: 'How your site looks and works on phones. Over 70% of web traffic is mobile. A non-responsive site loses most customers.' },
+  conversion:   { es: 'Qué tan bien está diseñado tu sitio para convertir visitas en clientes: llamadas a la acción, formularios, botones y claridad del mensaje.', en: 'How well your site is designed to convert visits into customers: calls to action, forms, buttons and message clarity.' },
+  aiReadiness:  { es: 'Qué tan preparado está tu sitio para integrarse con herramientas de IA: bots, automatizaciones y sistemas de atención al cliente inteligentes.', en: 'How ready your site is to integrate with AI tools: bots, automations and intelligent customer service systems.' },
+  security:     { es: 'Si tu sitio tiene HTTPS, headers de seguridad y protección básica. Un sitio inseguro genera desconfianza y puede ser penalizado por Google.', en: 'Whether your site has HTTPS, security headers and basic protection. An insecure site generates distrust and may be penalized by Google.' },
+  accessibility:{ es: 'Si personas con discapacidades pueden usar tu sitio correctamente. También mejora el SEO y la experiencia general de todos los usuarios.', en: 'Whether people with disabilities can use your site correctly. It also improves SEO and the overall experience for all users.' },
+};
+
 function MetricsGrid({ metrics, locale }: {
   metrics: AuditFunctionResult['metrics']; locale: Locale;
 }) {
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
   const items = locale === 'es'
     ? [
       { icon: '⚡', label: 'Velocidad de Carga', key: 'speed' },
@@ -82,21 +103,65 @@ function MetricsGrid({ metrics, locale }: {
       { icon: '♿', label: 'Accessibility', key: 'accessibility' },
     ];
 
+  const selectedItem = selectedKey ? items.find(i => i.key === selectedKey) : null;
+  const selectedValue = selectedKey ? (metrics as Record<string, number>)[selectedKey] ?? 0 : 0;
+  const selectedColor = selectedKey ? scoreColor(selectedValue) : '#94a3b8';
+
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-      gap: '1rem',
-    }}>
-      {items.map(item => (
-        <MetricCard
-          key={item.key}
-          icon={item.icon}
-          label={item.label}
-          value={(metrics as Record<string, number>)[item.key] ?? 0}
-          locale={locale}
-        />
-      ))}
+    <div>
+      {/* Hint */}
+      {!selectedKey && (
+        <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'rgba(255,255,255,0.35)', marginBottom: '1rem', marginTop: 0 }}>
+          {locale === 'es' ? '👆 Tocá una métrica para ver qué significa' : '👆 Tap a metric to see what it means'}
+        </p>
+      )}
+
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+        gap: '1rem',
+        marginBottom: selectedKey ? '1rem' : 0,
+      }}>
+        {items.map(item => (
+          <MetricCard
+            key={item.key}
+            icon={item.icon}
+            label={item.label}
+            value={(metrics as Record<string, number>)[item.key] ?? 0}
+            locale={locale}
+            selected={selectedKey === item.key}
+            onClick={() => setSelectedKey(selectedKey === item.key ? null : item.key)}
+          />
+        ))}
+      </div>
+
+      {/* Detail panel */}
+      {selectedItem && (
+        <div style={{
+          background: `${selectedColor}12`,
+          border: `1px solid ${selectedColor}44`,
+          borderRadius: 14,
+          padding: '1rem 1.25rem',
+          display: 'flex',
+          gap: '0.75rem',
+          alignItems: 'flex-start',
+          animation: 'terminalFadeIn 0.2s ease-out',
+        }}>
+          <span style={{ fontSize: '1.5rem', flexShrink: 0 }}>{selectedItem.icon}</span>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.3rem', color: selectedColor }}>
+              {selectedItem.label} — {selectedValue}/100
+            </div>
+            <div style={{ fontSize: '0.87rem', color: 'rgba(255,255,255,0.7)', lineHeight: 1.6 }}>
+              {METRIC_DESCRIPTIONS[selectedItem.key]?.[locale] ?? ''}
+            </div>
+          </div>
+          <button
+            onClick={() => setSelectedKey(null)}
+            style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '1rem', flexShrink: 0, padding: '0.1rem' }}
+          >✕</button>
+        </div>
+      )}
     </div>
   );
 }
