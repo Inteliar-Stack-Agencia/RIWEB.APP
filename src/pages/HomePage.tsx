@@ -266,7 +266,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start",
-        paddingTop: "clamp(3rem, 10vh, 6rem)",
+        paddingTop: "clamp(1rem, 4vh, 2.5rem)",
         paddingBottom: "2rem",
       }}>
 
