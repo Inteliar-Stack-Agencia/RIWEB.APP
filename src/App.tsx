@@ -7,6 +7,8 @@ import AuditPage from "./pages/AuditPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import ReportPage from "./pages/ReportPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 import DashboardLayout from "./pages/dashboard/DashboardLayout";
 import ClientsPage from "./pages/dashboard/ClientsPage";
 import BotPage from "./pages/dashboard/BotPage";
@@ -31,6 +33,10 @@ export default function App() {
           <Route path="/report/:id"    element={<ReportPage locale="en" />} />
           <Route path="/es/report/:id" element={<ReportPage locale="es" />} />
           <Route path="/admin"         element={<AdminPage />} />
+          <Route path="/privacy"       element={<PrivacyPage locale="en" />} />
+          <Route path="/terms"         element={<TermsPage locale="en" />} />
+          <Route path="/es/privacidad" element={<PrivacyPage locale="es" />} />
+          <Route path="/es/terminos"   element={<TermsPage locale="es" />} />
         </Route>
 
         {/* ── Login (no Layout) ────────────────────────────────────── */}
