@@ -21,7 +21,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <header className="topbar">
-        <Link to="/" className="logo">RIWEB.APP</Link>
+        <Link to="/" className="logo" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <img src="/logo.svg" alt="RIWEB logo" style={{ height: "32px", width: "32px" }} />
+          RIWEB.APP
+        </Link>
         <nav>
           <Link to={isEs ? "/es" : "/"} style={navLinkStyle(isHome)}>Home</Link>
           <Link to={isEs ? "/es/audit" : "/audit"} style={navLinkStyle(isAudit)}>Audit</Link>
