@@ -29,6 +29,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
       </header>
       <main id="app">{children}</main>
+      <footer style={{
+        textAlign: "center",
+        padding: "2rem 1rem",
+        borderTop: "1px solid rgba(255,255,255,0.06)",
+        color: "rgba(255,255,255,0.3)",
+        fontSize: "0.82rem",
+      }}>
+        <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "rgba(255,255,255,0.55)", marginBottom: "0.35rem", letterSpacing: "0.04em" }}>
+          RIWEB.APP <span style={{ color: "rgba(245,158,11,0.7)", fontWeight: 400 }}>| Web + Bot IA</span>
+        </div>
+        <div>© {new Date().getFullYear()} Interliar Stack · {isEs ? "Todos los derechos reservados" : "All rights reserved"}</div>
+      </footer>
     </>
   );
 }
