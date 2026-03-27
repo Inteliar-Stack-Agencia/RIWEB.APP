@@ -162,7 +162,7 @@ function MetricsGrid({ metrics, locale }: {
   );
 }
 
-const fallbackAudit = (url: string): AuditFunctionResult => ({
+const fallbackAudit = (url: string, locale: Locale): AuditFunctionResult => ({
   ok: true,
   url,
   tech: { fallback: true },
@@ -195,9 +195,8 @@ const fallbackAudit = (url: string): AuditFunctionResult => ({
   ]
 });
 
-// Hack: locale not available at module level for fallback — use arg
 const makeFallback = (url: string, locale: Locale): AuditFunctionResult => ({
-  ...fallbackAudit(url),
+  ...fallbackAudit(url, locale),
   issues: [{
     title: locale === 'es' ? "No pudimos analizar tu sitio en este momento" : "Could not analyze your site right now",
     why: locale === 'es' ? "Problema de conexión con el servicio de análisis." : "Connection issue with the analysis service.",
