@@ -266,7 +266,7 @@ export default function HomePage({ locale }: { locale: Locale }) {
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start",
-        paddingTop: "clamp(3rem, 10vh, 6rem)",
+        paddingTop: "clamp(1rem, 4vh, 2.5rem)",
         paddingBottom: "2rem",
       }}>
 
@@ -298,21 +298,6 @@ export default function HomePage({ locale }: { locale: Locale }) {
           {locale === "es"
             ? "🤖 Bot con IA que funciona como un agente de ventas"
             : "🤖 AI bot that works like a sales agent"}
-        </span>
-      </div>
-
-      {/* Interliar Stack attribution */}
-      <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-        <span style={{
-          display: "inline-block",
-          fontSize: "0.78rem",
-          color: "rgba(202,138,4,0.7)",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          fontWeight: 500,
-        }}>
-          {locale === "es" ? "Una solución de" : "A solution by"}{" "}
-          <strong style={{ color: "rgba(202,138,4,1)" }}>Interliar Stack</strong>
         </span>
       </div>
 
