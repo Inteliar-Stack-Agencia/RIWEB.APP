@@ -301,21 +301,6 @@ export default function HomePage({ locale }: { locale: Locale }) {
         </span>
       </div>
 
-      {/* Interliar Stack attribution */}
-      <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-        <span style={{
-          display: "inline-block",
-          fontSize: "0.78rem",
-          color: "rgba(202,138,4,0.7)",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          fontWeight: 500,
-        }}>
-          {locale === "es" ? "Una solución de" : "A solution by"}{" "}
-          <strong style={{ color: "rgba(202,138,4,1)" }}>Interliar Stack</strong>
-        </span>
-      </div>
-
       {/* Hero CTAs */}
       <div style={{
         display: "flex",
