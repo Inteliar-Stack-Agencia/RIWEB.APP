@@ -72,18 +72,16 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       payments: "Payments",
       extras: "Extras",
       support: "Support",
-      hosting: "Hosting",
       name: "Business Name",
       email: "Email",
       phone: "Phone",
       whatsapp: "WhatsApp Number",
       plan: "Plan",
-      status: "Payment Status",
+      paymentStatus: "Payment Status",
       contractDate: "Contract Date",
       deliveryDate: "Delivery Date",
       supportExpires: "Support Expires",
       domain: "Domain",
-      hosting: "Hosting",
       messages: "Messages Used",
       leads: "Leads Captured",
       noPayments: "No payments yet",
@@ -96,7 +94,7 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       noExtras: "No extras contracted",
       extra: "Extra",
       cost: "Cost",
-      status: "Status",
+      extraStatus: "Status",
       active: "Active",
       canceled: "Canceled",
       paused: "Paused",
@@ -116,18 +114,16 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       payments: "Pagos",
       extras: "Complementos",
       support: "Soporte",
-      hosting: "Hosting",
       name: "Nombre del Negocio",
       email: "Email",
       phone: "Teléfono",
       whatsapp: "Número WhatsApp",
       plan: "Plan",
-      status: "Estado de Pago",
+      paymentStatus: "Estado de Pago",
       contractDate: "Fecha Contrato",
       deliveryDate: "Fecha Entrega",
       supportExpires: "Soporte Expira",
       domain: "Dominio",
-      hosting: "Hosting",
       messages: "Mensajes Usados",
       leads: "Leads Capturados",
       noPayments: "Sin pagos aún",
@@ -140,7 +136,7 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       noExtras: "Sin complementos contratados",
       extra: "Complemento",
       cost: "Costo",
-      status: "Estado",
+      extraStatus: "Estado",
       active: "Activo",
       canceled: "Cancelado",
       paused: "Pausado",
@@ -512,7 +508,7 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
                 <span className="info-value">{bot.plan === "pro" ? t.pro : t.starter}</span>
               </div>
               <div className="info-row">
-                <span className="info-label">{t.status}</span>
+                <span className="info-label">{t.paymentStatus}</span>
                 <span
                   className="status-badge"
                   style={{ background: statusColor.bg, color: statusColor.text }}
@@ -593,7 +589,7 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
               <tr>
                 <th>{t.concept}</th>
                 <th>{t.amount}</th>
-                <th>{t.status}</th>
+                <th>{t.paymentStatus}</th>
                 <th>{t.date}</th>
               </tr>
             </thead>
@@ -626,7 +622,7 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
               <tr>
                 <th>{t.extra}</th>
                 <th>{t.cost}</th>
-                <th>{t.status}</th>
+                <th>{t.extraStatus}</th>
               </tr>
             </thead>
             <tbody>
