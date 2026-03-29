@@ -10,6 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const isHome = normalized === "/";
   const isAudit = normalized.startsWith("/audit");
+  const isBots = normalized.startsWith("/bots");
 
   const navLinkStyle = (active: boolean): React.CSSProperties => ({
     color: active ? '#F59E0B' : 'var(--text-muted)',
@@ -24,15 +25,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <header className="topbar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <Link to={isEs ? "/es" : "/"} className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <img src="/logo-new.png" alt="Logo" style={{ width: '32px', height: '32px', borderRadius: '6px' }} />
+          <Link to={isEs ? "/es" : "/"} className="logo">
+            <img src="/logo-new.png" alt="Logo" className="logo-img" />
             RIWEB.APP
           </Link>
           <span className="pro-badge">PRO</span>
         </div>
         <nav>
-          <Link to={isEs ? "/es" : "/"} style={navLinkStyle(isHome)}>Home</Link>
-          <Link to={isEs ? "/es/audit" : "/audit"} style={navLinkStyle(isAudit)}>Audit</Link>
+          <Link to={isEs ? "/es" : "/"} style={navLinkStyle(isHome)}>{isEs ? "Inicio" : "Home"}</Link>
+          <Link to={isEs ? "/es/bots" : "/bots"} style={navLinkStyle(isBots)}>{isEs ? "Mis Bots" : "My Bots"}</Link>
+          <Link to={isEs ? "/es/audit" : "/audit"} style={navLinkStyle(isAudit)}>{isEs ? "Auditoría" : "Audit"}</Link>
           <Link className="ghost-btn" to={toggleTarget}>{isEs ? "EN" : "ES"}</Link>
         </nav>
       </header>
