@@ -125,12 +125,12 @@ export default function HomePage({ locale }: { locale: Locale }) {
     <section className="landing-shell">
       <div className="bg-orb orb-1" />
       <div className="bg-orb orb-2" />
-      <h1 className="landing-title" style={{ fontSize: '4.2rem', lineHeight: 1.1, marginBottom: '2rem' }}>
+      <h1 className="landing-title">
         {locale === "es"
           ? "Haz que tu negocio o marca aparezca donde la gente busca hoy"
           : "Make your business or brand appear where people search today"}
       </h1>
-      <p className="landing-subtitle" style={{ fontSize: '1.25rem', marginBottom: '3rem', maxWidth: '900px', marginInline: 'auto', lineHeight: 1.5 }}>
+      <p className="landing-subtitle">
         {locale === "es" ? (
           <>
             Si ya tenés una web la mejoramos. Si no tenés, la creamos. Te ayudamos a que te encuentren en Google.

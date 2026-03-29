@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import type { Locale } from "../types";
 import { listRows, insertRow } from "../lib/supabase";
 
@@ -16,6 +17,7 @@ interface Bot {
 }
 
 export default function BotsPage({ locale }: { locale: Locale }) {
+  const navigate = useNavigate();
   const [bots, setBots] = useState<Bot[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -367,6 +369,7 @@ export default function BotsPage({ locale }: { locale: Locale }) {
                 <td>{bot.mensajes_usados_este_mes || 0}</td>
                 <td>
                   <button
+                    onClick={() => navigate(locale === "es" ? `/es/bots/${bot.id}` : `/bots/${bot.id}`)}
                     style={{
                       width: "auto",
                       padding: "0.375rem 0.75rem",
