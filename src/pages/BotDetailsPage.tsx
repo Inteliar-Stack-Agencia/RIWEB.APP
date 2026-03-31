@@ -59,6 +59,13 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
   const [error, setError] = useState<string | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [editData, setEditData] = useState<Partial<Bot>>({});
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [paymentForm, setPaymentForm] = useState({
+    concepto: "",
+    monto: "",
+    metodo_pago: "manual" as "manual" | "mercado-pago" | "stripe",
+  });
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   const labels = {
     en: {
@@ -102,6 +109,13 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       error: "Error loading bot",
       starter: "Starter ($65)",
       pro: "Pro ($120)",
+      registerPayment: "Register Payment",
+      paymentMethod: "Payment Method",
+      manual: "Manual Transfer",
+      mercadoPago: "Mercado Pago",
+      stripe: "Stripe",
+      registerBtn: "Register",
+      creatingPayment: "Creating payment...",
     },
     es: {
       back: "← Volver a Bots",
@@ -144,6 +158,13 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       error: "Error cargando bot",
       starter: "Starter ($65)",
       pro: "Pro ($120)",
+      registerPayment: "Registrar Pago",
+      paymentMethod: "Método de Pago",
+      manual: "Transferencia Manual",
+      mercadoPago: "Mercado Pago",
+      stripe: "Stripe",
+      registerBtn: "Registrar",
+      creatingPayment: "Creando pago...",
     },
   };
 
@@ -187,6 +208,83 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       setEditMode(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error saving");
+    }
+  }
+
+  async function handleCreatePayment(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setPaymentLoading(true);
+      if (!bot?.id || !paymentForm.concepto || !paymentForm.monto) {
+        setError(locale === "es" ? "Completa todos los campos" : "Fill all fields");
+        return;
+      }
+
+      // Si es Mercado Pago, redirige a checkout
+      if (paymentForm.metodo_pago === "mercado-pago") {
+        const response = await fetch("/checkout/mercado-pago", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            client_id: bot.id,
+            concepto: paymentForm.concepto,
+            monto: parseFloat(paymentForm.monto),
+          }),
+        });
+        const data = await response.json();
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+        } else {
+          setError(data.error || "Error creating payment");
+        }
+        return;
+      }
+
+      // Si es Stripe, redirige a checkout
+      if (paymentForm.metodo_pago === "stripe") {
+        const response = await fetch("/checkout/stripe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            client_id: bot.id,
+            concepto: paymentForm.concepto,
+            monto: parseFloat(paymentForm.monto),
+          }),
+        });
+        const data = await response.json();
+        if (data.checkout_url) {
+          window.location.href = data.checkout_url;
+        } else {
+          setError(data.error || "Error creating payment");
+        }
+        return;
+      }
+
+      // Si es Manual, registra directamente
+      const response = await fetch("/register-payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          client_id: bot.id,
+          concepto: paymentForm.concepto,
+          monto: parseFloat(paymentForm.monto),
+          metodo_pago: "manual",
+          estado: "pendiente",
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Error creating payment");
+      }
+
+      setPaymentForm({ concepto: "", monto: "", metodo_pago: "manual" });
+      setShowPaymentModal(false);
+      await loadBot();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error creating payment");
+    } finally {
+      setPaymentLoading(false);
     }
   }
 
@@ -580,7 +678,23 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
 
       {/* PAYMENTS */}
       <div className="card" style={{ marginBottom: "2rem" }}>
-        <h3>{t.payments}</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+          <h3 style={{ margin: 0 }}>{t.payments}</h3>
+          <button
+            onClick={() => setShowPaymentModal(true)}
+            style={{
+              background: "#CA8A04",
+              color: "white",
+              border: "none",
+              padding: "0.5rem 1rem",
+              borderRadius: "8px",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            {t.registerPayment}
+          </button>
+        </div>
         {payments.length === 0 ? (
           <div className="empty-msg">{t.noPayments}</div>
         ) : (
@@ -651,6 +765,69 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
           </table>
         )}
       </div>
+
+      {/* PAYMENT MODAL */}
+      {showPaymentModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>{t.registerPayment}</h2>
+            <form onSubmit={handleCreatePayment}>
+              <div className="form-group">
+                <label>{t.concept}</label>
+                <input
+                  type="text"
+                  required
+                  value={paymentForm.concepto}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, concepto: e.target.value })}
+                  placeholder="Ej: Pago 50% Starter"
+                  style={{ marginTop: "0.5rem" }}
+                />
+              </div>
+              <div className="form-group">
+                <label>{t.amount}</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  required
+                  value={paymentForm.monto}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, monto: e.target.value })}
+                  placeholder="0.00"
+                  style={{ marginTop: "0.5rem" }}
+                />
+              </div>
+              <div className="form-group">
+                <label>{t.paymentMethod}</label>
+                <select
+                  value={paymentForm.metodo_pago}
+                  onChange={(e) => setPaymentForm({ ...paymentForm, metodo_pago: e.target.value as any })}
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  <option value="manual">{t.manual}</option>
+                  <option value="mercado-pago">{t.mercadoPago}</option>
+                  <option value="stripe">{t.stripe}</option>
+                </select>
+              </div>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setShowPaymentModal(false)}
+                  disabled={paymentLoading}
+                >
+                  {t.cancel}
+                </button>
+                <button
+                  type="submit"
+                  style={{ background: "#CA8A04", color: "white", border: "none" }}
+                  disabled={paymentLoading}
+                >
+                  {paymentLoading ? t.creatingPayment : t.registerBtn}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
