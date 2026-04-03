@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { Locale } from "../types";
-import { getSingle, listRows, updateRow } from "../lib/supabase";
+import { getSingle, insertRow, listRows, updateRow } from "../lib/supabase";
 
 interface Bot {
   id: string;
@@ -66,6 +66,11 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
     metodo_pago: "manual" as "manual" | "mercado-pago" | "stripe",
   });
   const [paymentLoading, setPaymentLoading] = useState(false);
+  const [showExtraModal, setShowExtraModal] = useState(false);
+  const [extraForm, setExtraForm] = useState({
+    tipo: "analytics_avanzados" as "analytics_avanzados" | "soporte_prioritario" | "integraciones",
+  });
+  const [extraLoading, setExtraLoading] = useState(false);
 
   const labels = {
     en: {
@@ -116,6 +121,13 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       stripe: "Stripe",
       registerBtn: "Register",
       creatingPayment: "Creating payment...",
+      contractExtra: "Contract Extra",
+      selectExtra: "Select Complement",
+      analytics: "Advanced Analytics (+$20/month)",
+      prioritySupport: "Priority Support (+$15/month)",
+      integrations: "Custom Integrations (+$50+/month)",
+      contractBtn: "Contract",
+      contracting: "Contracting...",
     },
     es: {
       back: "← Volver a Bots",
@@ -165,6 +177,13 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       stripe: "Stripe",
       registerBtn: "Registrar",
       creatingPayment: "Creando pago...",
+      contractExtra: "Contratar Complemento",
+      selectExtra: "Seleccionar Complemento",
+      analytics: "Analytics Avanzado (+$20/mes)",
+      prioritySupport: "Soporte Prioritario (+$15/mes)",
+      integrations: "Integraciones Personalizadas (+$50+/mes)",
+      contractBtn: "Contratar",
+      contracting: "Contratando...",
     },
   };
 
@@ -285,6 +304,35 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
       setError(err instanceof Error ? err.message : "Error creating payment");
     } finally {
       setPaymentLoading(false);
+    }
+  }
+
+  const extraCatalog: Record<string, { nombre: string; costo_mensual: number }> = {
+    analytics_avanzados: { nombre: "Analytics Avanzado", costo_mensual: 20 },
+    soporte_prioritario: { nombre: "Soporte Prioritario", costo_mensual: 15 },
+    integraciones: { nombre: "Integraciones Personalizadas", costo_mensual: 50 },
+  };
+
+  async function handleContractExtra(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setExtraLoading(true);
+      if (!bot?.id) return;
+      const catalog = extraCatalog[extraForm.tipo];
+      await insertRow("extras_contratados", {
+        client_id: bot.id,
+        nombre: catalog.nombre,
+        costo_mensual: catalog.costo_mensual,
+        estado: "activo",
+        fecha_inicio: new Date().toISOString().split("T")[0],
+      });
+      setShowExtraModal(false);
+      setExtraForm({ tipo: "analytics_avanzados" });
+      await loadBot();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error contracting extra");
+    } finally {
+      setExtraLoading(false);
     }
   }
 
@@ -727,7 +775,23 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
 
       {/* EXTRAS */}
       <div className="card">
-        <h3>{t.extras}</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+          <h3 style={{ margin: 0 }}>{t.extras}</h3>
+          <button
+            onClick={() => setShowExtraModal(true)}
+            style={{
+              background: "#CA8A04",
+              color: "white",
+              border: "none",
+              padding: "0.5rem 1rem",
+              borderRadius: "8px",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            {t.contractExtra}
+          </button>
+        </div>
         {extras.length === 0 ? (
           <div className="empty-msg">{t.noExtras}</div>
         ) : (
@@ -765,6 +829,46 @@ export default function BotDetailsPage({ locale }: { locale: Locale }) {
           </table>
         )}
       </div>
+
+      {/* CONTRACT EXTRA MODAL */}
+      {showExtraModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <h2>{t.contractExtra}</h2>
+            <form onSubmit={handleContractExtra}>
+              <div className="form-group">
+                <label>{t.selectExtra}</label>
+                <select
+                  value={extraForm.tipo}
+                  onChange={(e) => setExtraForm({ tipo: e.target.value as typeof extraForm.tipo })}
+                  style={{ marginTop: "0.5rem" }}
+                >
+                  <option value="analytics_avanzados">{t.analytics}</option>
+                  <option value="soporte_prioritario">{t.prioritySupport}</option>
+                  <option value="integraciones">{t.integrations}</option>
+                </select>
+              </div>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => setShowExtraModal(false)}
+                  disabled={extraLoading}
+                >
+                  {t.cancel}
+                </button>
+                <button
+                  type="submit"
+                  style={{ background: "#CA8A04", color: "white", border: "none" }}
+                  disabled={extraLoading}
+                >
+                  {extraLoading ? t.contracting : t.contractBtn}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* PAYMENT MODAL */}
       {showPaymentModal && (
