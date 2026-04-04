@@ -284,7 +284,7 @@ export default function BotPage() {
         <>
           {/* ── Config técnica ────────────────────────────────────── */}
           <div className="admin-card" style={{ marginBottom: "1rem" }}>
-            <div style={{ fontWeight: 700, fontSize: "0.88rem", marginBottom: "0.85rem", color: "var(--text-muted)", letterSpacing: "0.05em", textTransform: "uppercase", fontSize: "0.72rem" }}>
+            <div style={{ fontWeight: 700, marginBottom: "0.85rem", color: "var(--text-muted)", letterSpacing: "0.05em", textTransform: "uppercase", fontSize: "0.72rem" }}>
               Configuración técnica
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px,1fr))", gap: "0.75rem" }}>
