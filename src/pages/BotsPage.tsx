@@ -6,7 +6,6 @@ import { listRows, insertRow } from "../lib/supabase";
 interface Bot {
   id: string;
   name: string;
-  email: string;
   plan: "starter" | "pro" | "custom";
   precio_base: number;
   estado_pago: "pending" | "pagado" | "vencido";
@@ -24,7 +23,6 @@ export default function BotsPage({ locale }: { locale: Locale }) {
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
     plan: "starter" as "starter" | "pro",
   });
 
@@ -102,7 +100,6 @@ export default function BotsPage({ locale }: { locale: Locale }) {
     try {
       await insertRow("clients", {
         name: formData.name,
-        email: formData.email,
         plan: formData.plan,
         precio_base: formData.plan === "pro" ? 120 : 65,
         precio_total: formData.plan === "pro" ? 120 : 65,
@@ -113,7 +110,7 @@ export default function BotsPage({ locale }: { locale: Locale }) {
           .split("T")[0],
         active: true,
       });
-      setFormData({ name: "", email: "", plan: "starter" });
+      setFormData({ name: "", plan: "starter" });
       setShowForm(false);
       await loadBots();
     } catch (err) {
@@ -404,17 +401,6 @@ export default function BotsPage({ locale }: { locale: Locale }) {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   placeholder="Ej: Electrónica García"
-                  style={{ marginTop: "0.5rem" }}
-                />
-              </div>
-              <div className="form-group">
-                <label>{t.email}</label>
-                <input
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  placeholder="contacto@negocio.com"
                   style={{ marginTop: "0.5rem" }}
                 />
               </div>
