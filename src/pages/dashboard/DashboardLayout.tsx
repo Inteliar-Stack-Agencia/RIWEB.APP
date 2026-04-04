@@ -12,9 +12,10 @@ export interface DashboardContext {
 }
 
 const NAV = [
-  { to: "/dashboard/clients", label: "Clientes",      icon: "👥" },
-  { to: "/dashboard/bot",     label: "Bot / Prompts", icon: "🤖" },
-  { to: "/dashboard/leads",   label: "Leads",         icon: "📋" },
+  { to: "/dashboard/clients",       label: "Clientes",      icon: "👥" },
+  { to: "/dashboard/bot",           label: "Bot / Prompts", icon: "🤖" },
+  { to: "/dashboard/leads",         label: "Leads",         icon: "📋" },
+  { to: "/dashboard/subscriptions", label: "Suscripciones", icon: "💳" },
 ];
 
 export default function DashboardLayout() {

@@ -56,7 +56,51 @@ export interface Client {
   business_type: string | null;
   whatsapp: string | null;
   active: boolean;
-  support_until: string | null;
+  created_at: string;
+  updated_at: string | null;
+  // Suscripción
+  plan: string | null;
+  precio_base: number | null;
+  precio_total: number | null;
+  estado_pago: string | null;
+  pago_50_percent: number | null;
+  pago_final: number | null;
+  fecha_contratacion: string | null;
+  fecha_entrega_estimada: string | null;
+  fecha_entrega_real: string | null;
+  fecha_expiracion_soporte: string | null;
+  // Hosting
+  hosting_proveedor: string | null;
+  hosting_url: string | null;
+  dominio: string | null;
+  dominio_propio: boolean | null;
+  // Uso
+  creditos_disponibles: number | null;
+  mensajes_usados_este_mes: number | null;
+  leads_capturados: number | null;
+}
+
+export interface Conversation {
+  id: string;
+  client_id: string;
+  telefono: string;
+  role: string;
+  content: string;
+  created_at: string;
+}
+
+export interface Pago {
+  id: string;
+  client_id: string;
+  concepto: string;
+  monto: number;
+  moneda: string | null;
+  estado: string | null;
+  metodo_pago: string | null;
+  referencia_transaccion: string | null;
+  fecha_vencimiento: string | null;
+  fecha_pagado: string | null;
+  notas: string | null;
   created_at: string;
 }
 
