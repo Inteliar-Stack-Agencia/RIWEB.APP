@@ -71,7 +71,7 @@ export default function MisBotsPage() {
     setSaving(true);
     setError("");
     try {
-      const created = await insertRowAuth<Client>(
+      const created = await insertRowAuth(
         "clients",
         { name: name.trim(), business_type: businessType || null, whatsapp: whatsapp || null, active: true },
         token,
