@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <mask id="arrow-cutout">
+      <!-- White = show gold, Black = cut out -->
+      <rect width="100" height="100" fill="white"/>
+      <!-- Arrow pointing top-right, inside the R bowl area -->
+      <path fill="black" d="
+        M 38 46 L 38 36 L 35 36 L 43 28 L 51 36 L 48 36 L 48 46 Z
+        M 43 28 L 43 22 L 62 22 L 62 41 L 56 41 L 56 32 L 47 41 L 43 37 L 52 28 Z
+      "/>
+    </mask>
+  </defs>
+
+  <!-- Full R shape with arrow masked out -->
+  <path mask="url(#arrow-cutout)" fill="url(#g)" d="
+    M 14 88 L 14 12 L 53 12
+    C 76 12 84 24 84 37
+    C 84 50 75 58 62 60
+    L 84 88 L 66 88 L 46 62 L 30 62 L 30 88 Z
+    M 30 25 L 52 25 C 63 25 68 30 68 37 C 68 44 63 49 52 49 L 30 49 Z
+  "/>
+</svg>
