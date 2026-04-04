@@ -1293,6 +1293,14 @@ h4 {
 
 .admin-select { cursor: pointer; }
 
+/* Opciones del select — fondo oscuro en todos los navegadores */
+select option,
+.admin-select option,
+.client-selector option {
+  background-color: #0d1526;
+  color: #f8fafc;
+}
+
 .admin-textarea {
   padding: 0.75rem;
   resize: vertical;
