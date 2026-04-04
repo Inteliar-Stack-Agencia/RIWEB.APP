@@ -48,6 +48,40 @@ export interface AuditQuickWin {
   impact: "low" | "medium" | "high";
 }
 
+// ── RIWEB Admin types ─────────────────────────────────────────────────────
+
+export interface Client {
+  id: string;
+  name: string;
+  business_type: string | null;
+  whatsapp: string | null;
+  active: boolean;
+  created_at: string;
+}
+
+export interface AIPrompt {
+  id: string;
+  client_id: string;
+  system_prompt: string | null;
+  tone: string;
+  business_type: string | null;
+  objective: string | null;
+  active: boolean;
+  updated_at: string | null;
+  created_at: string;
+}
+
+export interface BotLead {
+  id: string;
+  client_id: string;
+  name: string | null;
+  phone: string | null;
+  message: string | null;
+  created_at: string;
+}
+
+// ── Audit types ───────────────────────────────────────────────────────────
+
 export interface AuditFunctionResult {
   ok: true;
   url: string;
@@ -62,6 +96,8 @@ export interface AuditFunctionResult {
     speed: number;
     security: number;
     accessibility: number;
+    whatsappBot: number;
+    socialPresence: number;
   };
   scoreTotal: number;
   issues: AuditIssue[];

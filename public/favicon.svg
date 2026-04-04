@@ -1,7 +1,6 @@
-<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="6" fill="#0F172A"/>
-  <!-- Geometric 'R' matching the blocky reference -->
-  <path d="M6 6H20C24 6 26 8 26 12C26 15 24 17 20 17H14L26 26H18L10 17H6V26H3V6H6ZM6 9V14H19C20.5 14 21.5 13.5 21.5 12C21.5 10.5 20.5 9 19 9H6Z" fill="#CA8A04"/>
-  <!-- Arrow cutout integrated -->
-  <path d="M12 21L16 16L20 21H12Z" fill="#CA8A04"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="8" fill="#0F172A"/>
+  <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle"
+    font-family="system-ui, sans-serif" font-size="14" font-weight="700"
+    fill="#F59E0B" letter-spacing="0.5">R</text>
 </svg>

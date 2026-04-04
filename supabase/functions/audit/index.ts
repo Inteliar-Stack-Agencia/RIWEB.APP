@@ -174,6 +174,7 @@ Deno.serve(async (req) => {
     const hasChat = hasMatch(normalized, /intercom|drift|zendesk|tawk\.to|chatwoot|livechat|crisp/);
     const hasFaq = hasMatch(normalized, /faq|preguntas frecuentes/);
     const hasAutomationHints = hasMatch(normalized, /automation|automati[sz]aci[oó]n|bot|ai|ia|agente/);
+    const hasSocialLinks = hasMatch(normalized, /instagram\.com|facebook\.com|twitter\.com|x\.com\/[^/]|tiktok\.com|linkedin\.com|youtube\.com/);
 
     const seoSignals = {
       title: Boolean(title),
@@ -250,6 +251,18 @@ Deno.serve(async (req) => {
       (hasViewport ? 50 : 20) + (hasFaq ? 20 : 0) + 20 // baseline
     );
 
+    // 9. WHATSAPP / BOT
+    const whatsappBot = score(
+      (hasWhatsapp ? 80 : 0) +
+      (hasChat ? 20 : 0)
+    );
+
+    // 10. SOCIAL PRESENCE
+    const socialPresence = score(
+      (hasSocialLinks ? 70 : 0) +
+      (analytics.ga || analytics.fbq ? 30 : 0)
+    );
+
     const metrics = {
       performance,
       speed,
@@ -258,18 +271,22 @@ Deno.serve(async (req) => {
       conversion,
       aiReadiness,
       security,
-      accessibility
+      accessibility,
+      whatsappBot,
+      socialPresence
     };
 
     const scoreTotal = score(
-      performance * 0.15 +
-      speed * 0.15 +
-      seoBasics * 0.15 +
-      mobile * 0.15 +
-      conversion * 0.15 +
-      aiReadiness * 0.1 +
-      security * 0.1 +
-      accessibility * 0.05
+      performance * 0.13 +
+      speed * 0.13 +
+      seoBasics * 0.13 +
+      mobile * 0.12 +
+      conversion * 0.13 +
+      aiReadiness * 0.10 +
+      security * 0.10 +
+      accessibility * 0.05 +
+      whatsappBot * 0.08 +
+      socialPresence * 0.03
     );
 
     const issues: AuditIssue[] = [];
