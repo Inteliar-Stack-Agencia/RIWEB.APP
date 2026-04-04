@@ -64,9 +64,10 @@ export interface AIPrompt {
   id: string;
   client_id: string;
   business_type: string | null;
-  tone: string | null;
-  goal: string | null;
+  tone: string;
+  objective: string | null;
   system_prompt: string | null;
+  active: boolean;
   created_at: string;
   updated_at: string | null;
 }
@@ -76,7 +77,7 @@ export interface BotLead {
   client_id: string;
   name: string | null;
   phone: string | null;
-  first_message: string | null;
+  message: string | null;
   created_at: string;
 }
 
