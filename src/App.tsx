@@ -16,6 +16,7 @@ import ClientsPage from "./pages/dashboard/ClientsPage";
 import BotPage from "./pages/dashboard/BotPage";
 import LeadsPage from "./pages/dashboard/LeadsPage";
 import SubscriptionsPage from "./pages/dashboard/SubscriptionsPage";
+import MisBotsPage from "./pages/dashboard/MisBotsPage";
 
 // Wraps public routes with the existing top-nav Layout
 function PublicWrapper() {
@@ -60,7 +61,8 @@ export default function App() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<Navigate to="clients" replace />} />
+          <Route index element={<Navigate to="bots" replace />} />
+          <Route path="bots"    element={<MisBotsPage />} />
           <Route path="clients" element={<ClientsPage />} />
           <Route path="bot"     element={<BotPage />} />
           <Route path="leads"          element={<LeadsPage />} />
