@@ -16,6 +16,8 @@ const NAV = [
   { to: "/dashboard/clients",       label: "Clientes",      icon: "👥" },
   { to: "/dashboard/bot",           label: "Bot / Prompts", icon: "⚙️" },
   { to: "/dashboard/leads",         label: "Leads",         icon: "📋" },
+  { to: "/dashboard/tickets",       label: "Tickets",       icon: "🎫" },
+  { to: "/dashboard/proyectos",     label: "Proyectos",     icon: "🗂️" },
   { to: "/dashboard/subscriptions", label: "Suscripciones", icon: "💳" },
 ];
 

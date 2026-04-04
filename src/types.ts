@@ -125,6 +125,31 @@ export interface BotLead {
   created_at: string;
 }
 
+export interface Ticket {
+  id: string;
+  client_id: string;
+  telefono: string | null;
+  problema: string;
+  estado: string;
+  prioridad: string | null;
+  notas: string | null;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface Proyecto {
+  id: string;
+  client_id: string;
+  nombre: string;
+  tipo: string | null;
+  estado: string;
+  url_produccion: string | null;
+  fecha_inicio: string | null;
+  fecha_entrega: string | null;
+  notas: string | null;
+  created_at: string;
+}
+
 export interface AuditFunctionResult {
   ok: true;
   url: string;

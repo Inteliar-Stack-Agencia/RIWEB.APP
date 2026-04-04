@@ -264,6 +264,10 @@ export default function BotPage() {
     );
   }
 
+  const webhookUrl = selectedClient?.hosting_url
+    ? `${selectedClient.hosting_url.replace(/\/$/, "")}/webhook`
+    : null;
+
   return (
     <div>
       <div style={{ marginBottom: "1.5rem" }}>
@@ -278,6 +282,24 @@ export default function BotPage() {
         <div style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Cargando configuración...</div>
       ) : (
         <>
+          {/* ── Config técnica ────────────────────────────────────── */}
+          <div className="admin-card" style={{ marginBottom: "1rem" }}>
+            <div style={{ fontWeight: 700, fontSize: "0.88rem", marginBottom: "0.85rem", color: "var(--text-muted)", letterSpacing: "0.05em", textTransform: "uppercase", fontSize: "0.72rem" }}>
+              Configuración técnica
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px,1fr))", gap: "0.75rem" }}>
+              <ConfigRow label="CLIENT_ID" value={selectedClientId} mono />
+              <ConfigRow label="WhatsApp" value={selectedClient?.whatsapp ?? null} />
+              <ConfigRow label="Railway URL" value={selectedClient?.hosting_url ?? null} link />
+              <ConfigRow label="Webhook URL" value={webhookUrl} mono link />
+            </div>
+            {!selectedClient?.hosting_url && (
+              <div style={{ marginTop: "0.75rem", fontSize: "0.78rem", color: "var(--text-muted)", background: "rgba(202,138,4,0.06)", border: "1px solid rgba(202,138,4,0.2)", borderRadius: "8px", padding: "0.6rem 0.85rem" }}>
+                ⚠️ Completá la <strong>Railway URL</strong> en Suscripciones para ver la URL del webhook.
+              </div>
+            )}
+          </div>
+
           {/* ── Panel de entrenamiento ─────────────────────────────── */}
           <div className="admin-card" style={{ marginBottom: "1rem" }}>
             <div
@@ -579,6 +601,42 @@ function Field({
     <div className="admin-form-group" style={style}>
       <label className="admin-form-label">{label}</label>
       {children}
+    </div>
+  );
+}
+
+function ConfigRow({ label, value, mono, link }: { label: string; value: string | null; mono?: boolean; link?: boolean }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    if (!value) return;
+    navigator.clipboard.writeText(value).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    });
+  };
+  return (
+    <div>
+      <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", marginBottom: "0.2rem", fontWeight: 600 }}>{label}</div>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        {value ? (
+          <>
+            {link ? (
+              <a href={value} target="_blank" rel="noreferrer" style={{ fontSize: "0.78rem", color: "#f59e0b", fontFamily: mono ? "monospace" : "inherit", wordBreak: "break-all", textDecoration: "none" }}>
+                {value}
+              </a>
+            ) : (
+              <span style={{ fontSize: "0.78rem", fontFamily: mono ? "monospace" : "inherit", wordBreak: "break-all", color: "var(--text-main)" }}>
+                {value}
+              </span>
+            )}
+            <button onClick={copy} title="Copiar" style={{ background: "none", border: "none", cursor: "pointer", color: copied ? "#4ade80" : "var(--text-muted)", fontSize: "0.85rem", padding: "0 0.1rem", flexShrink: 0 }}>
+              {copied ? "✓" : "📋"}
+            </button>
+          </>
+        ) : (
+          <span style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>—</span>
+        )}
+      </div>
     </div>
   );
 }
