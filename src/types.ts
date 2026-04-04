@@ -48,6 +48,38 @@ export interface AuditQuickWin {
   impact: "low" | "medium" | "high";
 }
 
+// ── Admin dashboard types ─────────────────────────────────────────────────────
+
+export interface Client {
+  id: string;
+  name: string;
+  business_type: string | null;
+  whatsapp: string | null;
+  active: boolean;
+  support_until: string | null;
+  created_at: string;
+}
+
+export interface AIPrompt {
+  id: string;
+  client_id: string;
+  business_type: string | null;
+  tone: string | null;
+  goal: string | null;
+  system_prompt: string | null;
+  created_at: string;
+  updated_at: string | null;
+}
+
+export interface BotLead {
+  id: string;
+  client_id: string;
+  name: string | null;
+  phone: string | null;
+  first_message: string | null;
+  created_at: string;
+}
+
 export interface AuditFunctionResult {
   ok: true;
   url: string;
