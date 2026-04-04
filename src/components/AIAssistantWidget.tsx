@@ -124,7 +124,7 @@ export function AIAssistantWidget({ locale, auditUrl }: { locale: Locale, auditU
                         <input
                             value={input}
                             onChange={e => setInput(e.target.value)}
-                            onKeyPress={e => e.key === 'Enter' && handleSend()}
+                            onKeyDown={e => e.key === 'Enter' && handleSend()}
                             placeholder={isSpanish ? "Preguntame algo..." : "Ask me anything..."}
                             style={{ flex: 1, padding: '0.6rem 1rem', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', fontSize: '0.85rem' }}
                         />
