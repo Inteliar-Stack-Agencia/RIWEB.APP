@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useState } from "react";
+import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { insertRowAuth, listRowsAuth, updateRowAuth } from "../../lib/supabase";
@@ -556,7 +556,7 @@ export default function BotPage() {
 
 // ── Helpers de UI ─────────────────────────────────────────────────────────────
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <div style={{
       fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.08em",
@@ -572,8 +572,8 @@ function Field({
   label, children, style,
 }: {
   label: string;
-  children: React.ReactNode;
-  style?: React.CSSProperties;
+  children: ReactNode;
+  style?: CSSProperties;
 }) {
   return (
     <div className="admin-form-group" style={style}>
