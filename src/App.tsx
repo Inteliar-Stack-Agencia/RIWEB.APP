@@ -32,23 +32,32 @@ export default function App() {
 
         {/* ── Public routes (with top nav Layout) ──────────────────── */}
         <Route element={<PublicWrapper />}>
-          <Route path="/"              element={<HomePage locale="en" />} />
+          {/* Default language: Spanish */}
+          <Route path="/"              element={<HomePage locale="es" />} />
           <Route path="/es"            element={<HomePage locale="es" />} />
-          <Route path="/audit"         element={<AuditPage locale="en" />} />
           <Route path="/es/audit"      element={<AuditPage locale="es" />} />
-          <Route path="/report/:id"    element={<ReportPage locale="en" />} />
           <Route path="/es/report/:id" element={<ReportPage locale="es" />} />
-          <Route path="/admin"         element={<AdminPage />} />
-          <Route path="/privacy"       element={<PrivacyPage locale="en" />} />
-          <Route path="/terms"         element={<TermsPage locale="en" />} />
           <Route path="/es/privacidad" element={<PrivacyPage locale="es" />} />
           <Route path="/es/terminos"   element={<TermsPage locale="es" />} />
+          <Route path="/es/bots"       element={<BotsPage locale="es" />} />
+          <Route path="/es/bots/:id"   element={<BotDetailsPage locale="es" />} />
 
-          {/* ── Bots CRM (bilingual) ──────────────────────────────── */}
-          <Route path="/bots"        element={<BotsPage locale="en" />} />
-          <Route path="/es/bots"     element={<BotsPage locale="es" />} />
-          <Route path="/bots/:id"    element={<BotDetailsPage locale="en" />} />
-          <Route path="/es/bots/:id" element={<BotDetailsPage locale="es" />} />
+          {/* English routes under /en */}
+          <Route path="/en"            element={<HomePage locale="en" />} />
+          <Route path="/en/audit"      element={<AuditPage locale="en" />} />
+          <Route path="/en/report/:id" element={<ReportPage locale="en" />} />
+          <Route path="/en/privacy"    element={<PrivacyPage locale="en" />} />
+          <Route path="/en/terms"      element={<TermsPage locale="en" />} />
+          <Route path="/en/bots"       element={<BotsPage locale="en" />} />
+          <Route path="/en/bots/:id"   element={<BotDetailsPage locale="en" />} />
+
+          <Route path="/admin"         element={<AdminPage />} />
+          <Route path="/privacy"       element={<PrivacyPage locale="es" />} />
+          <Route path="/terms"         element={<TermsPage locale="es" />} />
+          <Route path="/audit"         element={<AuditPage locale="es" />} />
+          <Route path="/report/:id"    element={<ReportPage locale="es" />} />
+          <Route path="/bots"          element={<BotsPage locale="es" />} />
+          <Route path="/bots/:id"      element={<BotDetailsPage locale="es" />} />
         </Route>
 
         {/* ── Login (sin Layout) ───────────────────────────────────── */}

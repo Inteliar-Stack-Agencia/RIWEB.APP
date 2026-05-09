@@ -2,9 +2,16 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
-  const isEs = location.pathname.startsWith("/es");
-  const normalized = isEs ? location.pathname.replace(/^\/es/, "") || "/" : location.pathname;
-  const toggleTarget = isEs ? normalized : `/es${normalized === "/" ? "" : normalized}`;
+  const isEn = location.pathname.startsWith("/en");
+  const isEs = !isEn;
+  const normalized = isEn
+    ? location.pathname.replace(/^\/en/, "") || "/"
+    : location.pathname.startsWith("/es")
+    ? location.pathname.replace(/^\/es/, "") || "/"
+    : location.pathname;
+  const toggleTarget = isEn
+    ? normalized === "/" ? "/es" : `/es${normalized}`
+    : normalized === "/" ? "/en" : `/en${normalized}`;
 
   const isHome = normalized === "/";
   const isAudit = normalized.startsWith("/audit");
