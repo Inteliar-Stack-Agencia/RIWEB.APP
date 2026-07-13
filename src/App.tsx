@@ -51,7 +51,6 @@ export default function App() {
           <Route path="/en/bots"       element={<BotsPage locale="en" />} />
           <Route path="/en/bots/:id"   element={<BotDetailsPage locale="en" />} />
 
-          <Route path="/admin"         element={<AdminPage />} />
           <Route path="/privacy"       element={<PrivacyPage locale="es" />} />
           <Route path="/terms"         element={<TermsPage locale="es" />} />
           <Route path="/audit"         element={<AuditPage locale="es" />} />
@@ -62,6 +61,16 @@ export default function App() {
 
         {/* ── Login (sin Layout) ───────────────────────────────────── */}
         <Route path="/login" element={<LoginPage />} />
+
+        {/* ── /admin (protegido — antes era público, ver auditoría de seguridad) ── */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ── RIWEB Admin Dashboard (protegido) ────────────────────── */}
         <Route

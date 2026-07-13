@@ -138,6 +138,29 @@ export async function callGenerateReport(audit: AuditFunctionResult, locale = "e
   };
 }
 
+export async function callGenerateBotPrompt(
+  clientName: string,
+  bizType: string,
+  training: object,
+  accessToken: string
+): Promise<string> {
+  if (!hasSupabaseConfig) throw new Error("Missing Supabase env");
+  const res = await fetch(`${supabaseUrl}/functions/v1/generate-bot-prompt`, {
+    method: "POST",
+    headers: {
+      apikey: supabaseAnonKey || "",
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ clientName, bizType, training })
+  });
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok || !body?.ok) {
+    throw new Error(body?.error ?? `Bot prompt generation failed: ${res.status}`);
+  }
+  return body.prompt as string;
+}
+
 // ── Supabase Auth ─────────────────────────────────────────────────────────
 
 export interface AuthSession {

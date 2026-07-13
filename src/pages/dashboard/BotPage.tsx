@@ -1,7 +1,7 @@
 import { type CSSProperties, type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { insertRowAuth, listRowsAuth, updateRowAuth } from "../../lib/supabase";
+import { callGenerateBotPrompt, insertRowAuth, listRowsAuth, updateRowAuth } from "../../lib/supabase";
 import type { AIPrompt } from "../../types";
 import type { DashboardContext } from "./DashboardLayout";
 
@@ -38,97 +38,12 @@ const EMPTY_TRAINING: TrainingData = {
 const TONES = ["amigable", "profesional", "directo", "formal", "casual", "empático"];
 const OBJECTIVES = ["ventas", "soporte", "reservas", "información", "pedidos", "leads"];
 
-// ── Llamada a Claude API para generar el prompt ───────────────────────────────
-
-async function generarPromptConIA(
-  clientName: string,
-  bizType: string,
-  data: TrainingData,
-  apiKey: string,
-): Promise<string> {
-  const metaPrompt = `Sos un experto en prompt engineering para agentes de WhatsApp con IA.
-Tu tarea es crear un system prompt COMPLETO, DETALLADO y MUY ESPECÍFICO para un agente de WhatsApp.
-
-El system prompt que generes debe hacer que el agente parezca un empleado real del negocio que conoce TODO sobre la empresa.
-
-Datos del negocio:
-- Nombre del negocio: ${clientName}
-- Tipo de negocio: ${bizType || "no especificado"}
-- Nombre del agente: ${data.agentName || "el asistente"}
-- Tono: ${data.tone}
-- Objetivo principal: ${data.objective}
-
-Descripción del negocio:
-${data.bizDescription || "No especificada"}
-
-Productos / Servicios (con precios si aplica):
-${data.products || "No especificados"}
-
-Horarios de atención:
-${data.schedule || "No especificado"}
-
-Ubicación / Contacto:
-${data.location || "No especificado"}
-
-Preguntas frecuentes:
-${data.faq || "No especificadas"}
-
-Políticas (devoluciones, garantías, envíos, etc.):
-${data.policies || "No especificadas"}
-
-Frases o temas que NUNCA debe mencionar:
-${data.forbidden || "Ninguna restricción especificada"}
-
-Cuándo y cómo escalar a una persona real:
-${data.escalation || "No especificado"}
-
----
-
-Generá un system prompt en español argentino (usando "vos", "podés", "tenés") con estas secciones:
-
-## Tu identidad
-## Sobre el negocio
-## Productos y servicios
-## Horarios y ubicación
-## Preguntas frecuentes
-## Políticas
-## Reglas de comportamiento
-## Cuándo escalar
-
-El system prompt debe:
-- Usar toda la información proporcionada, sin inventar nada
-- Ser muy específico y detallado (no genérico)
-- Incluir ejemplos de cómo responder según el tono elegido
-- Tener instrucciones claras para cada situación
-- Terminar siempre con una acción o pregunta al cliente
-
-Devolvé SOLO el system prompt, sin explicaciones previas ni comentarios.`;
-
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-      "content-type": "application/json",
-      "anthropic-dangerous-direct-browser-access": "true",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      messages: [{ role: "user", content: metaPrompt }],
-    }),
-  });
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error((err as { error?: { message?: string } }).error?.message ?? `Error ${res.status}`);
-  }
-
-  const data2 = await res.json() as { content: Array<{ text: string }> };
-  return data2.content[0]?.text ?? "";
-}
-
 // ── Componente principal ──────────────────────────────────────────────────────
+// La generación del prompt con IA llama a la Edge Function `generate-bot-prompt`
+// (supabase/functions/generate-bot-prompt), que guarda la Anthropic API key
+// server-side. Antes se llamaba a api.anthropic.com directo desde el navegador
+// con la key pegada en un input y guardada en localStorage — ver auditoría de
+// seguridad. No repetir ese patrón.
 
 export default function BotPage() {
   const { selectedClientId, clients } = useOutletContext<DashboardContext>();
@@ -151,8 +66,6 @@ export default function BotPage() {
   const [training, setTraining] = useState<TrainingData>(EMPTY_TRAINING);
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState("");
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem("riweb_anthropic_key") ?? "");
-  const [showKeyInput, setShowKeyInput] = useState(false);
 
   // Cargar prompt existente
   useEffect(() => {
@@ -200,16 +113,15 @@ export default function BotPage() {
 
   // Generar prompt con IA
   const handleGenerate = async () => {
-    if (!apiKey.trim()) { setShowKeyInput(true); return; }
-    if (!selectedClient) return;
+    if (!selectedClient || !token) return;
     setGenerating(true);
     setGenError("");
     try {
-      const generated = await generarPromptConIA(
+      const generated = await callGenerateBotPrompt(
         selectedClient.name,
         bizType,
         training,
-        apiKey,
+        token,
       );
       setSysPrompt(generated);
       setWizardOpen(false);
@@ -442,39 +354,11 @@ export default function BotPage() {
                   </Field>
                 </div>
 
-                {/* API Key + Generar */}
+                {/* Generar prompt con IA (la key vive server-side en la Edge Function) */}
                 <div style={{
                   background: "rgba(202,138,4,0.06)", border: "1px solid rgba(202,138,4,0.2)",
                   borderRadius: "10px", padding: "1rem",
                 }}>
-                  {(showKeyInput || !apiKey) && (
-                    <Field label="Anthropic API Key (se guarda en tu navegador)" style={{ marginBottom: "0.75rem" }}>
-                      <div style={{ display: "flex", gap: "0.5rem" }}>
-                        <input
-                          type="password"
-                          value={apiKey}
-                          onChange={(e) => setApiKey(e.target.value)}
-                          placeholder="sk-ant-..."
-                          style={{ flex: 1 }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => {
-                            localStorage.setItem("riweb_anthropic_key", apiKey);
-                            setShowKeyInput(false);
-                          }}
-                          style={{
-                            background: "rgba(202,138,4,0.15)", border: "1px solid rgba(202,138,4,0.35)",
-                            borderRadius: "8px", padding: "0 0.85rem", color: "#f59e0b",
-                            cursor: "pointer", fontSize: "0.82rem", fontWeight: 600, whiteSpace: "nowrap",
-                          }}
-                        >
-                          Guardar key
-                        </button>
-                      </div>
-                    </Field>
-                  )}
-
                   {genError && (
                     <div style={{ color: "#f87171", fontSize: "0.82rem", marginBottom: "0.75rem" }}>
                       Error: {genError}
@@ -491,18 +375,6 @@ export default function BotPage() {
                     >
                       {generating ? "Generando prompt..." : "✨ Generar prompt con IA"}
                     </button>
-                    {apiKey && !showKeyInput && (
-                      <button
-                        type="button"
-                        onClick={() => setShowKeyInput(true)}
-                        style={{
-                          background: "none", border: "none", color: "var(--text-muted)",
-                          cursor: "pointer", fontSize: "0.75rem", padding: 0,
-                        }}
-                      >
-                        Cambiar API key
-                      </button>
-                    )}
                     {generating && (
                       <span style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
                         Claude está analizando el negocio y generando el prompt...
